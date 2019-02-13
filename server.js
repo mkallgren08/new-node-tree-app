@@ -58,7 +58,16 @@ db.on("error", function (error) {
 db.once("open", function () {
   console.log(`Mongoose connection to ${mongoConnect} successful.`);
   const nodeCollection = db.collection('nodes');
+
+  // **************ERROR***************************
+  // This line causes a 503 error 
+  // VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+
   //const changeStream = nodeCollection.watch(); <==============THIS IS THROWING THE ERROR
+
+  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
 
 });
 

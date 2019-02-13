@@ -8,7 +8,7 @@ import { /*Col,*/ Row, Container } from "../../components/Grid";
 // import { List, ListItem } from "../../components/List";
 import { RootNode } from "../../components/Nodes";
 import ChildNode from "../../components/Nodes/ChildNode";
-import  CustomForm  from "../../components/Form";
+import CustomForm from "../../components/Form";
 import Pusher from 'pusher-js'
 
 const pusher = new Pusher('651f8f2fd68d8e9f1ab0', {
@@ -21,13 +21,15 @@ class MainPage extends Component {
   state = {
     nodes: [],
     show: false,
+    showNameEdit: false,
+    showChildEdit: false,
     childName: "",
     numGrandChildren: null,
     minVal: null,
     maxVal: null,
     errorFields: [],
-    sampleData:{
-      numGrandChildren:3,
+    sampleData: {
+      numGrandChildren: 3,
       newName: 'Updatarooney',
       minVal: 22,
       maxVal: 5800,
@@ -50,13 +52,26 @@ class MainPage extends Component {
     this.handleModalShow = this.handleModalShow.bind(this)
     // this.handleInputChange = this.handleInputChange.bind(this)
   }
-  
+
   // Initial load of saved items
   componentDidMount() {
     this.channel = pusher.subscribe('nodes');
     this.loadNodeData();
   };
-  
+
+  // =============================================================
+  //  Pusher Data Read/Write Functions
+  // ============================================================= 
+  pushData = (data) => {
+    console.log(data)
+    this.setState(prevState => ({ rawnodes: prevState.rawnodes.concat(data) })
+      , () => {
+        console.log(this.state.rawnodes)
+        // setTimeout(()=> {this.parseNodes(this.state.rawnodes)}, 50);
+        // this.parseNodes(this.state.rawnodes)
+      })
+  }
+
   // =============================================================
   //  DB Read/Write Functions
   // =============================================================
@@ -74,47 +89,52 @@ class MainPage extends Component {
     this.postNodes(this.state.sampleData)
   }
 
-  postNodes = (nodes) =>{
+  postNodes = (nodes, grandkids) => {
     console.log(nodes)
     API.saveNode(nodes)
-    .then(res=> {
-      console.log(res)
-      this.loadNodeData()
-    })
-    .catch(err => console.log(err))
+      .then(res => {
+        console.log(res)
+        if (grandkids) {
+          this.generateGrndchld(res.data._id)
+        } else {
+          console.log(this.state.rawnodes)
+          this.loadNodeData()
+        }
+      })
+      .catch(err => console.log(err))
   }
 
   deleteNode = (id) => {
     console.log(`Started the deletion process on id ${id}`)
-    API.deleteNode(id).then(res =>{
+    API.deleteNode(id).then(res => {
       console.log(res)
-      this.loadNodeData()
+      API.deleteMany(id).then(
+        res => {
+          console.log(res)
+          this.loadNodeData()
+        })
     })
   }
 
   changeNodeName = (id, newName) => {
-    newName = {newName:this.state.sampleData.newName}
+    newName = { newName: this.state.sampleData.newName }
     console.log(`Started the editing process on id ${id} to change the name to ${newName}`)
     API.editNode(id, newName).then(
       res => {
         console.log(res);
-        // setTimeout(this.loadNodeData,1000)
-        this.loadNodeData();
-        // let newNodes = []
-        // this.state.nodes.forEach((item) => {
-        //   if (item.id === id){
-        //     item.name = res.data.name
-        //   }
-        //   newNodes.push(item)
-        // })
-        // this.setState({nodes:newNodes}, ()=> {console.log(this.state.nodes)})
+        res => {
+          console.log(res);
+          this.setState({ childName: '' }, () => {
+            this.loadNodeData();
+          })
+        }
       }
     )
   }
 
-  changeNodeChildren = (id) =>{
+  changeNodeChildren = (id) => {
     console.log(`Started the deletion process on id ${id}`)
-    API.deleteMany(id).then(res =>{
+    API.deleteMany(id).then(res => {
       console.log(res)
       this.generateGrndchld()
     })
@@ -122,9 +142,35 @@ class MainPage extends Component {
   // =============================================================
   //  Data Manipulation Functions
   // =============================================================
-  generateGrndchld = () => {
-    let x = this.state.sampleData.numGrandchildren
-    let min = this.state.sampleData.minVal
+  generateGrndchld = (id) => {
+    // console.log(id)
+    // let x = this.state.sampleData.numGrandChildren
+    // let min = this.state.sampleData.minVal
+    // let max = this.state.sampleData.maxVal
+    let x = this.state.numGrandChildren
+    let min = this.state.minVal
+    let max = this.state.maxVal
+    let grandkids = [];
+    console.log(x, min, max)
+    let generateVal = (min, max) => {
+      min = parseInt(min, 10)
+      max = parseInt(max, 10)
+      let res = Math.floor(Math.random() * max) + min
+      console.log(res)
+      return res
+    }
+
+    for (let i = 0; i < x; i++) {
+      let grandkid = {
+        nodetype: 'grandchild',
+        parent: id,
+        name: null,
+        value: generateVal(min, max)
+      };
+      grandkids.push(grandkid);
+    }
+    console.log(grandkids)
+    this.postNodes(grandkids, false)
   }
 
 
@@ -154,7 +200,7 @@ class MainPage extends Component {
         })
 
         nodes.push(child)
-
+        this.setState({ nodes: nodes, show: false, showNameEdit: false, showChildEdit: false })
       }
     })
     console.log(nodes)
@@ -187,7 +233,7 @@ class MainPage extends Component {
     this.setState({
       [name]: value
     }, () => {
-      if (this.state.show){
+      if (this.state.show) {
       }
     });
 
@@ -197,31 +243,31 @@ class MainPage extends Component {
     e.preventDefault();
     console.log("Submission heard")
     let count = 0;
-    let errorFields=[]; 
-    console.log(count,errorFields)
-    if (this.state.childName.length>0 && isNaN(this.state.childName)){
-      count++;
-    } else {errorFields.push('Factory Name')}
-    if(this.state.numGrandChildren>0 && this.state.numGrandChildren<16){
-      count++;
-    } else {errorFields.push('Number of Nodes')}
-    if(this.state.minVal>0 && !isNaN(this.state.minVal)){
-      count++;
-    }else { errorFields.push('Min Range Val')}
-    if(this.state.maxVal>0 && this.state.maxVal>this.state.minVal && !isNaN(this.state.maxVal) ){
-      count++;
-    }else { errorFields.push('Max Range Val')}
+    let errorFields = [];
     console.log(count, errorFields)
-    if (count === 4){ 
+    if (this.state.childName.length > 0 && isNaN(this.state.childName)) {
+      count++;
+    } else { errorFields.push('Factory Name') }
+    if (this.state.numGrandChildren > 0 && this.state.numGrandChildren < 16) {
+      count++;
+    } else { errorFields.push('Number of Nodes') }
+    if (this.state.minVal > 0 && !isNaN(this.state.minVal)) {
+      count++;
+    } else { errorFields.push('Min Range Val') }
+    if (this.state.maxVal > 0 && this.state.maxVal > this.state.minVal && !isNaN(this.state.maxVal)) {
+      count++;
+    } else { errorFields.push('Max Range Val') }
+    console.log(count, errorFields)
+    if (count === 4) {
       this.handleModalClose();
     } else {
       let message = "\n"
-      errorFields.forEach(val=>{
+      errorFields.forEach(val => {
         message += `* ${val}\n`
       })
       alert(`You have errors in one or more of the following fields: ${message}`)
     }
-    
+
   }
 
   // This is the function that renders the page in the client's window.
@@ -252,14 +298,14 @@ class MainPage extends Component {
             </Modal.Header>
             <Modal.Body>
               <CustomForm
-              errors = {this.state.errorFields}
-              handleInputChange={this.handleInputChange}
-              name={this.state.childName}
-              number={this.state.numChildren}
-              minVal={this.state.minValue}
-              maxVal={this.state.maxValue}
-              handleModalClose={this.handleModalClose}
-              handleFormSubmit={this.handleFormSubmit}
+                errors={this.state.errorFields}
+                handleInputChange={this.handleInputChange}
+                name={this.state.childName}
+                number={this.state.numChildren}
+                minVal={this.state.minValue}
+                maxVal={this.state.maxValue}
+                handleModalClose={this.handleModalClose}
+                handleFormSubmit={this.handleFormSubmit}
               />
             </Modal.Body>
             <Modal.Footer>
@@ -271,17 +317,18 @@ class MainPage extends Component {
           <RootNode id="rootNode">
             {children ?
               this.state.nodes.map(item => {
-                return (<ChildNode 
-                          key={item.id}
-                          id = {item.id} 
-                          name={item.name} 
-                          grandchildren={item.grandchildren} 
-                          parent={item.parent}
-                          handleDelete={this.deleteNode}
-                          handleNameEdit={this.changeNodeName}
-                          >
-                          </ChildNode>
-              )}) : <h4>No Children to Display</h4>
+                return (<ChildNode
+                  key={item.id}
+                  id={item.id}
+                  name={item.name}
+                  grandchildren={item.grandchildren}
+                  parent={item.parent}
+                  handleDelete={this.deleteNode}
+                  handleNameEdit={this.changeNodeName}
+                >
+                </ChildNode>
+                )
+              }) : <h4>No Children to Display</h4>
             }
           </RootNode>
         </Row>
