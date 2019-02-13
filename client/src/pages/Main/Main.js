@@ -86,7 +86,15 @@ class MainPage extends Component {
   };
 
   sendNode = () => {
-    this.postNodes(this.state.sampleData)
+    //this.postNodes(this.state.sampleData)
+    console.log('sending node')
+    let newNode = {
+      nodetype: 'child',
+      parent: null,
+      name: this.state.childName,
+      value: null
+    }
+    this.postNodes(newNode, true)
   }
 
   postNodes = (nodes, grandkids) => {
@@ -213,6 +221,8 @@ class MainPage extends Component {
   handleModalClose(e) {
     this.setState({
       show: false,
+      showNameEdit: false,
+      showChildEdit: false,
       childName: "",
       numGrandChildren: null,
       minVal: null,
@@ -230,13 +240,16 @@ class MainPage extends Component {
     // Update the appropriate state
     const { name, value } = event.target;
     console.log(name, value)
-    this.setState({
-      [name]: value
-    }, () => {
-      if (this.state.show) {
-      }
-    });
-
+    if (name === 'minVal' || name === 'maxVal' || name === 'numGrandChildren') {
+      let nuval = parseInt(value, 10)
+      this.setState({
+        [name]: nuval
+      })
+    } else {
+      this.setState({
+        [name]: value
+      })
+    }
   };
 
   handleFormSubmit = e => {
@@ -259,7 +272,7 @@ class MainPage extends Component {
     } else { errorFields.push('Max Range Val') }
     console.log(count, errorFields)
     if (count === 4) {
-      this.handleModalClose();
+      this.sendNode();
     } else {
       let message = "\n"
       errorFields.forEach(val => {
@@ -269,6 +282,30 @@ class MainPage extends Component {
     }
 
   }
+
+    // Handles factory Name edits and form validation
+    handleNameEdit = (e, id) => {
+      e.preventDefault();
+      console.log(id)
+      let count = 0;
+      let errorFields = this.state.errorFields
+      if (this.state.childName.length > 0 && isNaN(this.state.childName)) {
+        count++;
+      } else { errorFields.push('Factory Name') }
+      if (count === 1) {
+        this.changeNodeName(id, this.state.childName)
+      } else {
+        let message = "\n"
+        errorFields.forEach(val => {
+          message += `* ${val}\n`
+        })
+        alert(`You have errors in one or more of the following fields: ${message}`)
+      }
+    }
+    // Handles factory range edits and form validation
+    handleRangeEdit = e => {
+  
+    }
 
   // This is the function that renders the page in the client's window.
   render() {
