@@ -63,7 +63,7 @@ db.once("open", function () {
   // This line causes a 503 error 
   // VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
 
-  //const changeStream = nodeCollection.watch(); <==============THIS IS THROWING THE ERROR
+  const changeStream = nodeCollection.watch(); /* <==============THIS IS THROWING THE ERROR */
 
   // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
