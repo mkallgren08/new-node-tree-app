@@ -20,7 +20,7 @@ app.use((req, res, next) => {
 
 // Configure body parser for AJAX requests
 app.use(bodyParser.urlencoded({
-  extended: false
+  extended: true
 }));
 app.use(bodyParser.json());
 // Serve up static assets (usually on heroku)
