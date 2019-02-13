@@ -11,6 +11,10 @@ import ChildNode from "../../components/Nodes/ChildNode";
 import  CustomForm  from "../../components/Form";
 import Pusher from 'pusher-js'
 
+const pusher = new Pusher('651f8f2fd68d8e9f1ab0', {
+  cluster: 'mt1',
+  forceTLS: true
+});
 
 class MainPage extends Component {
   // type, name, parent,value
@@ -33,6 +37,7 @@ class MainPage extends Component {
       value: null
     }
   };
+
 
 
   //==============================================================
