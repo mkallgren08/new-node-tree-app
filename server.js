@@ -3,7 +3,6 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const routes = require("./routes");
-const Pusher = require('pusher');
 
 require('dotenv').config();
 //console.log(process.env)
@@ -16,27 +15,27 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 // Add routes, both API and view
-app.use(routes);
+
+
+
+// Serve up static assets (usually on heroku)
+// if (process.env.NODE_ENV === "production") {
+//   app.use(express.static("client/build"));
+// }
 // Serve up static assets (usually on heroku)
 app.use(express.static("client/build"));
-
-//Set up new Pusher
-const pusher = new Pusher({
-  appId: '713669',
-  key: '651f8f2fd68d8e9f1ab0',
-  secret: 'bb6c55ebcb5b177bb6bd',
-  cluster: 'mt1',
-  encrypted: true
-});
-
-pusher.trigger('my-channel', 'my-event', {
-  "message": "hello world"
-});
+app.use(routes);
 
 // Set up promises with mongoose
 mongoose.Promise = global.Promise;
 
 // Declare Mongoose Connection Parameters
+
+// "mongodb://heroku_cwf2cqkx:8vpi8pekalrvhlae96mahc4ktq@ds153494.mlab.com:53494/heroku_cwf2cqkx"
+
+//  'mongodb://localhost/hangman_options' ||
+
+
 let mongoConnect = process.env.MONGODB_URI2;
 
 
