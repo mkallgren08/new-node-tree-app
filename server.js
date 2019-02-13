@@ -36,7 +36,7 @@ mongoose.Promise = global.Promise;
 //  'mongodb://localhost/hangman_options' ||
 
 
-let mongoConnect = process.env.MONGODB_URI;
+let mongoConnect = process.env.MONGODB_URI2;
 
 
 // Connect to the Mongo DB
