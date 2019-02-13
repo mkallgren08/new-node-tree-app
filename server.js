@@ -66,7 +66,7 @@ db.on("error", function (error) {
 db.once("open", function () {
   console.log(`Mongoose connection to ${mongoConnect} successful.`);
   const nodeCollection = db.collection('nodes');
-  const changeStream = nodeCollection.watch();
+  //const changeStream = nodeCollection.watch();
 
 });
 
