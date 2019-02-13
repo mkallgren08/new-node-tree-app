@@ -25,8 +25,6 @@ var pusher = new Pusher({
   encrypted: true
 });
 
-const channel = 'nodes';
-
 pusher.trigger('my-channel','my-event',{"message":"Hi from the new app"})
 
 // Serve up static assets (usually on heroku)
@@ -67,25 +65,8 @@ db.on("error", function (error) {
 // Once logged in to the db through mongoose, log a success message
 db.once("open", function () {
   console.log(`Mongoose connection to ${mongoConnect} successful.`);
-
   const nodeCollection = db.collection('nodes');
   const changeStream = nodeCollection.watch();
-      if(change.operationType === 'insert') {
-      const child = change.fullDocument;
-      console.log("Child Data: ")
-      console.log(child)
-      pusher.trigger(
-        channel,
-        'inserted', 
-        // {
-        //   id: child._id,
-        //   nodetype: child.nodetype,
-        //   parent:child.parent,
-        //   name:child.name,
-        //   value:child.value
-        // }
-      ); 
-    }
 
 });
 
