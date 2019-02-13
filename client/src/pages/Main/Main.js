@@ -53,6 +53,7 @@ class MainPage extends Component {
   
   // Initial load of saved items
   componentDidMount() {
+    this.channel = pusher.subscribe('nodes');
     this.loadNodeData();
   };
   
