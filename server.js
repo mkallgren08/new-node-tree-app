@@ -25,6 +25,7 @@ var pusher = new Pusher({
   encrypted: true
 });
 
+pusher.trigger('my-channel','my-event',{"message":"Hi from the new app"})
 
 // Serve up static assets (usually on heroku)
 // if (process.env.NODE_ENV === "production") {
