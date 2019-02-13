@@ -10,6 +10,14 @@ require('dotenv').config();
 const PORT = process.env.PORT || 3001;
 const app = express();
 
+// Configre app headers
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  next();
+});
+
 // Configure body parser for AJAX requests
 app.use(bodyParser.urlencoded({
   extended: false
