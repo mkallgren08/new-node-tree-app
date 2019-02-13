@@ -9,6 +9,8 @@ import { /*Col,*/ Row, Container } from "../../components/Grid";
 import { RootNode } from "../../components/Nodes";
 import ChildNode from "../../components/Nodes/ChildNode";
 import  CustomForm  from "../../components/Form";
+import Pusher from 'pusher-js'
+
 
 class MainPage extends Component {
   // type, name, parent,value
