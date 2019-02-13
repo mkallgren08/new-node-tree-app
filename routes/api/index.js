@@ -15,12 +15,7 @@ const router = express.Router();
 /* CREATE */
 router.post('/new', (req, res) => {
   console.log(Child)
-  Child.create({
-    nodetype: req.body.nodetype,
-    parent: req.body.parent,
-    name: req.body.name,
-    value: req.body.value
-  }, (err, child) => {
+  Child.create(req.body, (err, child) => {
     if (err) {
       console.log('CREATE Error: ' + err);
       res.status(500).send('Error');

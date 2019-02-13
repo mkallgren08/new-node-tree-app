@@ -144,7 +144,7 @@ class MainPage extends Component {
     console.log(`Started the deletion process on id ${id}`)
     API.deleteMany(id).then(res => {
       console.log(res)
-      this.generateGrndchld()
+      this.generateGrndchld(id)
     })
   }
   // =============================================================
