@@ -17,6 +17,13 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 // Add routes, both API and view
 
+var pusher = new Pusher({
+  appId: '713669',
+  key: '651f8f2fd68d8e9f1ab0',
+  secret: 'bb6c55ebcb5b177bb6bd',
+  cluster: 'mt1',
+  encrypted: true
+});
 
 
 // Serve up static assets (usually on heroku)
