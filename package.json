@@ -1,0 +1,30 @@
+{
+  "name": "hangman",
+  "version": "1.0.0",
+  "description": "hangman game written using MERN stack",
+  "main": "server.js",
+  "scripts": {
+    "server": "node server.js",
+    "client": "cd client && npm run start",
+    "start": "concurrently \"nodemon server.js\" \"npm run client\"",
+    "build": "cd client && npm run build",
+    "deploy": "yarn build && git add . && git commit -m \"Building for production\" && git push heroku master",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^3.5.0",
+    "nodemon": "^1.11.0"
+  },
+  "dependencies": {
+    "auth0-js": "^9.0.2",
+    "axios": "^0.16.2",
+    "body-parser": "^1.18.2",
+    "dotenv": "^6.2.0",
+    "express": "^4.15.4",
+    "mongoose": "^5.1.2",
+    "pusher": "^2.2.0",
+    "react-router-dom": "^4.2.2"
+  }
+}

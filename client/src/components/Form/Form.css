@@ -1,0 +1,6 @@
+.hasError {
+  border-color:darkred;
+  border-style: groove;
+  border-width:2px;
+  background-color: rgba(107, 0, 0, 0.15)
+}
