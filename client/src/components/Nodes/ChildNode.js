@@ -14,7 +14,7 @@ class ChildNode extends Component {
 
     return (
       <div className='childWrapper'>
-        <div className="childHeader">
+        <div className="childHeader" value={this.props.numKids}>
           <div className="text" key={this.props.id}>{this.props.name}</div>
           <button className="edit" onClick={()=>{this.props.handleNameEdit(this.props.id)}}>EDIT</button>
           <button className="delete" onClick={() => this.props.handleDelete(this.props.id)}>X</button>

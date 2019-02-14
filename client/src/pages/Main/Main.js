@@ -231,7 +231,7 @@ class MainPage extends Component {
   parseNodes = (data) => {
     let newnodes = [];
     console.log(data)
-    data.forEach((item) => {
+    data.forEach((item,index) => {
       if (item.nodetype === "child") {
         let child = {
           name: item.name,
@@ -239,7 +239,7 @@ class MainPage extends Component {
           id: item._id,
           grandchildren: []
         }
-        data.forEach((sub) => {
+        data.forEach((sub, ind) => {
           if (sub.nodetype === "grandchild" && child.id === sub.parent) {
             console.log("We found a grandchild!")
             let grandchild = {
@@ -408,6 +408,7 @@ class MainPage extends Component {
                   parent={item.parent}
                   handleDelete={this.deleteNode}
                   handleNameEdit={this.changeNodeName}
+                  numKids={item.grandchildren.length}
                 >
                 </ChildNode>
                 )

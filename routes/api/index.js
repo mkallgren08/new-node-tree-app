@@ -1,12 +1,3 @@
-// const router = require("express").Router();
-// const testdataRoutes = require('./testdata.js');
-
-// //  routes
-// router.use("/testdata", testdataRoutes);
-
-// module.exports = router;
-
-
 const Child = require('../../models/child');
 const express = require('express');
 const router = express.Router();
