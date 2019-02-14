@@ -42,7 +42,7 @@ pusher.trigger('my-channel', 'my-event', { "message": "Hi from the new app" })
 // Set Pusher channels
 const channel = 'nodes';
 
-/* MONGODB AND MONGOOSE SETUP ==================*/
+/* MONGODB AND MONGOOSE SETUP ==================*/  
 // Set up promises with mongoose
 mongoose.Promise = global.Promise;
 
