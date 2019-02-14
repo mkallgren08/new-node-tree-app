@@ -42,7 +42,7 @@ pusher.trigger('my-channel', 'my-event', { "message": "Hi from the new app" })
 // Set Pusher channels
 const channel = 'nodes';
 
-/* MONGODB AND MONGOOSE SETUP ==================*/  
+/* MONGODB AND MONGOOSE SETUP ==================*/
 // Set up promises with mongoose
 mongoose.Promise = global.Promise;
 
@@ -79,23 +79,25 @@ db.once("open", function () {
   // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   changeStream.on('change', (change) => {
     // console.log(change);
-    if(change.operationType === 'insert') {
+    if (change.operationType === 'insert') {
       const child = change.fullDocument;
       console.log("Child Data: ")
       console.log(child)
       pusher.trigger(
         channel,
         'inserted',
-        child 
-        // {
-        //   id: child._id,
-        //   nodetype: child.nodetype,
-        //   parent:child.parent,
-        //   name:child.name,
-        //   value:child.value
-        // }
-      ); 
-    }  
+        child
+      );
+    } else if (change.operationType === 'delete') {
+      const data = change.documentKey
+      console.log("Deleted Child Data: ")
+      console.log(data)
+      pusher.trigger(
+        channel,
+        'deleted',
+        data
+      );
+    }
   })
 
 

@@ -19,6 +19,7 @@ const pusher = new Pusher('651f8f2fd68d8e9f1ab0', {
 class MainPage extends Component {
   // type, name, parent,value
   state = {
+    editnodes: [],
     rawnodes: [],
     nodes: [],
     show: false,
@@ -57,9 +58,8 @@ class MainPage extends Component {
   // Initial load of saved items
   componentDidMount() {
     this.channel = pusher.subscribe('nodes');
-    this.channel.bind('inserted', (data)=>{
-      this.pushData(data)
-    });
+    this.channel.bind('inserted', (data) => { this.pushData(data) });
+    this.channel.bind('deleted', (data) => { console.log("Heard a delete", data) })
     this.loadNodeData();
   };
 
@@ -75,13 +75,42 @@ class MainPage extends Component {
       , () => {
         // Check the state of the rawnodes obj in the state
         // console.log(this.state.rawnodes)
-        if (data.name ==='last grandkid'){
+        if (data.name === 'last grandkid') {
           console.log('*****************TIMEOUT******************')
-          setTimeout(()=> {this.parseNodes(this.state.rawnodes)}, 100);
+          setTimeout(() => { this.parseNodes(this.state.rawnodes) }, 100);
         }
         // this.parseNodes(this.state.rawnodes)
       })
   }
+
+  // Small helper function for the remove and update functions
+  check = (item, id) => {
+    let pass = true;
+    if (item._id === id || item.parent === id) {
+      pass = false
+    }
+    return pass
+  }
+
+  // Function to take deleted data and remove it from the rawnodes object in the state
+  removeData = (data) => {
+    let rawnodes = this.state.rawnodes;
+    
+    let exraw = rawnodes.filter(el => this.check(el, data._id))
+    console.log(data)
+    console.log(exraw)
+    this.setState(prevState=>({
+        editnodes:prevState.editnodes.concat(data._id)
+      }),()=>{
+        console.log(this.state.editnodes)
+      })
+    // this.setState(prevState => ({
+    //   rawnodes: prevState.tasks.filter(el => this.check(el, id))
+    // },()=>{
+    //   console.log(this.state.rawnodes)
+    // }));
+  }
+
 
   // =============================================================
   //  DB Read/Write Functions
@@ -91,7 +120,7 @@ class MainPage extends Component {
       .then(
         res => {
           // console.log("test data: " + JSON.stringify(res.data, null, 2))
-          this.setState({rawnodes:res.data}, () => {
+          this.setState({ rawnodes: res.data }, () => {
             this.parseNodes(this.state.rawnodes);
           })
         })
@@ -132,7 +161,7 @@ class MainPage extends Component {
       API.deleteMany(id).then(
         res => {
           console.log(res)
-          this.loadNodeData()
+          //this.loadNodeData()
         })
     })
   }
@@ -187,7 +216,7 @@ class MainPage extends Component {
         parent: id,
         value: generateVal(min, max)
       };
-      if (i===x-1){
+      if (i === x - 1) {
         grandkid.name = 'last grandkid'
       } else {
         grandkid.name = null
@@ -300,29 +329,29 @@ class MainPage extends Component {
 
   }
 
-    // Handles factory Name edits and form validation
-    handleNameEdit = (e, id) => {
-      e.preventDefault();
-      console.log(id)
-      let count = 0;
-      let errorFields = this.state.errorFields
-      if (this.state.childName.length > 0 && isNaN(this.state.childName)) {
-        count++;
-      } else { errorFields.push('Factory Name') }
-      if (count === 1) {
-        this.changeNodeName(id, this.state.childName)
-      } else {
-        let message = "\n"
-        errorFields.forEach(val => {
-          message += `* ${val}\n`
-        })
-        alert(`You have errors in one or more of the following fields: ${message}`)
-      }
+  // Handles factory Name edits and form validation
+  handleNameEdit = (e, id) => {
+    e.preventDefault();
+    console.log(id)
+    let count = 0;
+    let errorFields = this.state.errorFields
+    if (this.state.childName.length > 0 && isNaN(this.state.childName)) {
+      count++;
+    } else { errorFields.push('Factory Name') }
+    if (count === 1) {
+      this.changeNodeName(id, this.state.childName)
+    } else {
+      let message = "\n"
+      errorFields.forEach(val => {
+        message += `* ${val}\n`
+      })
+      alert(`You have errors in one or more of the following fields: ${message}`)
     }
-    // Handles factory range edits and form validation
-    handleRangeEdit = e => {
-  
-    }
+  }
+  // Handles factory range edits and form validation
+  handleRangeEdit = e => {
+
+  }
 
   // This is the function that renders the page in the client's window.
   render() {
