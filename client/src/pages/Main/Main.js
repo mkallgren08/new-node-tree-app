@@ -240,25 +240,28 @@ class MainPage extends Component {
           grandchildren: []
         }
         data.forEach((sub, ind) => {
-          if (sub.nodetype === "grandchild" && child.id === sub.parent) {
-            console.log("We found a grandchild!")
-            let grandchild = {
-              name: sub.name,
-              parent: sub.parent,
-              id: sub._id,
-              value: sub.value
+          // sets a range limit on incdeces to speed up processing in large datasets
+          if(ind >= index-20 && ind <= index+20){
+            if (sub.nodetype === "grandchild" && child.id === sub.parent) {
+              console.log("We found a grandchild!")
+              let grandchild = {
+                name: sub.name,
+                parent: sub.parent,
+                id: sub._id,
+                value: sub.value
+              }
+              child.grandchildren.push(grandchild)
+              // data.splice(ind,1)
             }
-            child.grandchildren.push(grandchild)
-            // data.splice(ind,1)
           }
-        })
 
+        })
         newnodes.push(child)
-        this.setState({ nodes: newnodes, show: false, showNameEdit: false, showChildEdit: false })
+
       }
     })
-    // console.log(nodes)
-    // this.setState({ nodes: nodes })
+    
+    this.setState({ nodes: newnodes, show: false, showNameEdit: false, showChildEdit: false })
   }
 
 
