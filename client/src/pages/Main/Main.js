@@ -56,6 +56,9 @@ class MainPage extends Component {
   // Initial load of saved items
   componentDidMount() {
     this.channel = pusher.subscribe('nodes');
+    this.channel.bind('inserted', ()=>{
+      console.log("Record was inserted!")
+    });
     this.loadNodeData();
   };
 

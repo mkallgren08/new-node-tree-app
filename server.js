@@ -35,11 +35,12 @@ var pusher = new Pusher({
   key: '651f8f2fd68d8e9f1ab0',
   secret: 'bb6c55ebcb5b177bb6bd',
   cluster: 'mt1',
-  encrypted: true
+  useTLS: true
 });
 // Test the Pusher connection
-pusher.trigger('my-channel','my-event',{"message":"Hi from the new app"})
-
+pusher.trigger('my-channel', 'my-event', { "message": "Hi from the new app" })
+// Set Pusher channels
+const channel = 'nodes';
 
 /* MONGODB AND MONGOOSE SETUP ==================*/
 // Set up promises with mongoose
@@ -50,9 +51,10 @@ let mongoConnect = process.env.MONGODB_URI2;
 
 // Connect to the Mongo DB
 mongoose.connect(
-  mongoConnect, {
-    useMongoClient: true
-  }
+  mongoConnect
+  // , {
+  //   useMongoClient: true
+  // }
 );
 
 const db = mongoose.connection;
@@ -67,13 +69,34 @@ db.once("open", function () {
   console.log(`Mongoose connection to ${mongoConnect} successful.`);
   const nodeCollection = db.collection('nodes');
 
-  // **************ERROR***************************
-  // This line causes a 503 error 
+  // **************ERROR (Currently Solved) *******************
+  // This line was causing a 503 error on Heroku Deployment - 
+  // had to upgrade Mongod DB to version>= 3.1.13 and Mongoose to 
+  // version >= 5.4.12 to solve, leaving this note in in case it 
+  // crops up again.
   // VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
-  
-  const changeStream = nodeCollection.watch(); /* <==============THIS IS THROWING THE ERROR */
-
+  const changeStream = nodeCollection.watch();
   // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  changeStream.on('change', (change) => {
+    // console.log(change);
+    if(change.operationType === 'insert') {
+      const child = change.fullDocument;
+      console.log("Child Data: ")
+      console.log(child)
+      pusher.trigger(
+        channel,
+        'inserted',
+        'okay' 
+        // {
+        //   id: child._id,
+        //   nodetype: child.nodetype,
+        //   parent:child.parent,
+        //   name:child.name,
+        //   value:child.value
+        // }
+      ); 
+    }  
+  })
 
 
 
@@ -83,10 +106,10 @@ db.once("open", function () {
 /* FINAL SETUP STEPS */
 // Send every request to the React app
 // Define any API routes before this runs
-app.get("*", function(req, res) {
+app.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build/index.html"));
 });
 
-app.listen(PORT, function() {
+app.listen(PORT, function () {
   console.log(`🌎 ==> Server now on port ${PORT}!`);
 });
