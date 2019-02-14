@@ -86,7 +86,7 @@ db.once("open", function () {
       pusher.trigger(
         channel,
         'inserted',
-        'okay' 
+        child 
         // {
         //   id: child._id,
         //   nodetype: child.nodetype,

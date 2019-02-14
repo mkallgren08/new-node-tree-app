@@ -11,7 +11,7 @@ class GrandchildNode extends Component {
     return (
       <div className='grandchildWrapper'>
       <div className="grandchildHeader">
-        <div className="text">{this.props.name}</div>
+        {/* <div className="text">{this.props.name}</div> */}
         <div className="gcValue">{this.props.value}</div>
         <div className="delete">-</div>
       </div>

@@ -19,6 +19,7 @@ const pusher = new Pusher('651f8f2fd68d8e9f1ab0', {
 class MainPage extends Component {
   // type, name, parent,value
   state = {
+    rawnodes: [],
     nodes: [],
     show: false,
     showNameEdit: false,
@@ -56,8 +57,8 @@ class MainPage extends Component {
   // Initial load of saved items
   componentDidMount() {
     this.channel = pusher.subscribe('nodes');
-    this.channel.bind('inserted', ()=>{
-      console.log("Record was inserted!")
+    this.channel.bind('inserted', (data)=>{
+      this.pushData(data)
     });
     this.loadNodeData();
   };
@@ -65,12 +66,19 @@ class MainPage extends Component {
   // =============================================================
   //  Pusher Data Read/Write Functions
   // ============================================================= 
+
+  // Function to take newly inserted data and push it to the rawnodes in the state
   pushData = (data) => {
-    console.log(data)
+    // Logs out the data returned from the Pusher trigger on the server
+    //console.log(data)
     this.setState(prevState => ({ rawnodes: prevState.rawnodes.concat(data) })
       , () => {
-        console.log(this.state.rawnodes)
-        // setTimeout(()=> {this.parseNodes(this.state.rawnodes)}, 50);
+        // Check the state of the rawnodes obj in the state
+        // console.log(this.state.rawnodes)
+        if (data.name ==='last grandkid'){
+          console.log('*****************TIMEOUT******************')
+          setTimeout(()=> {this.parseNodes(this.state.rawnodes)}, 100);
+        }
         // this.parseNodes(this.state.rawnodes)
       })
   }
@@ -83,7 +91,9 @@ class MainPage extends Component {
       .then(
         res => {
           // console.log("test data: " + JSON.stringify(res.data, null, 2))
-          this.parseNodes(res.data);
+          this.setState({rawnodes:res.data}, () => {
+            this.parseNodes(this.state.rawnodes);
+          })
         })
       .catch(err => console.log(err));
   };
@@ -109,7 +119,7 @@ class MainPage extends Component {
           this.generateGrndchld(res.data._id)
         } else {
           console.log(this.state.rawnodes)
-          this.loadNodeData()
+          // this.loadNodeData()
         }
       })
       .catch(err => console.log(err))
@@ -136,7 +146,7 @@ class MainPage extends Component {
         res => {
           console.log(res);
           this.setState({ childName: '' }, () => {
-            this.loadNodeData();
+            // this.loadNodeData();
           })
         }
       }
@@ -175,9 +185,13 @@ class MainPage extends Component {
       let grandkid = {
         nodetype: 'grandchild',
         parent: id,
-        name: null,
         value: generateVal(min, max)
       };
+      if (i===x-1){
+        grandkid.name = 'last grandkid'
+      } else {
+        grandkid.name = null
+      }
       grandkids.push(grandkid);
     }
     console.log(grandkids)
@@ -186,7 +200,7 @@ class MainPage extends Component {
 
 
   parseNodes = (data) => {
-    let nodes = [];
+    let newnodes = [];
     console.log(data)
     data.forEach((item) => {
       if (item.nodetype === "child") {
@@ -210,12 +224,12 @@ class MainPage extends Component {
           }
         })
 
-        nodes.push(child)
-        this.setState({ nodes: nodes, show: false, showNameEdit: false, showChildEdit: false })
+        newnodes.push(child)
+        this.setState({ nodes: newnodes, show: false, showNameEdit: false, showChildEdit: false })
       }
     })
-    console.log(nodes)
-    this.setState({ nodes: nodes })
+    // console.log(nodes)
+    // this.setState({ nodes: nodes })
   }
 
 
