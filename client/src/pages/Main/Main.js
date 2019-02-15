@@ -58,8 +58,13 @@ class MainPage extends Component {
   // Initial load of saved items
   componentDidMount() {
     this.channel = pusher.subscribe('nodes');
-    this.channel.bind('inserted', (data) => { this.pushData(data) });
-    this.channel.bind('deleted', (data) => { console.log("Heard a delete", data) })
+    // this.channel.bind('InsertTest', (data) => {
+    //   console.log('Insert-Test data: ');
+    //   //console.log(data)
+    // })
+    this.channel.bind('insert', (data) => { this.pushData(data) });
+    this.channel.bind('deleted', (data) => { this.loadNodeData() })
+    this.channel.bind('reparse', () => { this.parseNodes(this.state.rawnodes) })
     this.loadNodeData();
   };
 
@@ -69,18 +74,12 @@ class MainPage extends Component {
 
   // Function to take newly inserted data and push it to the rawnodes in the state
   pushData = (data) => {
-    // Logs out the data returned from the Pusher trigger on the server
-    //console.log(data)
-    this.setState(prevState => ({ rawnodes: prevState.rawnodes.concat(data) })
-      , () => {
-        // Check the state of the rawnodes obj in the state
-        // console.log(this.state.rawnodes)
-        if (data.name === 'last grandkid') {
-          console.log('*****************TIMEOUT******************')
-          setTimeout(() => { this.parseNodes(this.state.rawnodes) }, 100);
-        }
-        // this.parseNodes(this.state.rawnodes)
-      })
+    // * Logs out the data returned from the Pusher trigger on the server
+    //console.log(typeof data); console.log(data)
+    this.setState(prevState => ({ rawnodes: prevState.rawnodes.concat(data) }), () => {
+      // * Check the state of the rawnodes obj in the state
+      console.log(this.state.rawnodes)
+    })
   }
 
   // Small helper function for the remove and update functions
@@ -95,7 +94,7 @@ class MainPage extends Component {
   // Function to take deleted data and remove it from the rawnodes object in the state
   removeData = (data) => {
     let rawnodes = this.state.rawnodes;
-    
+
     let exraw = rawnodes.filter(el => this.check(el, data._id))
     console.log(data)
     console.log(exraw)
@@ -127,43 +126,27 @@ class MainPage extends Component {
       .catch(err => console.log(err));
   };
 
-  sendNode = () => {
-    //this.postNodes(this.state.sampleData)
-    console.log('sending node')
-    let newNode = {
-      nodetype: 'child',
-      parent: null,
-      name: this.state.childName,
-      value: null
-    }
-    this.postNodes(newNode, true)
-  }
-
   postNodes = (nodes, grandkids) => {
     console.log(nodes)
-    API.saveNode(nodes)
+    API.saveNode({ nodes: nodes, newCycle: grandkids })
       .then(res => {
         console.log(res)
         if (grandkids) {
           this.generateGrndchld(res.data._id)
         } else {
-          console.log(this.state.rawnodes)
+          //console.log(this.state.rawnodes)
           // this.loadNodeData()
         }
       })
       .catch(err => console.log(err))
   }
 
-  deleteNode = (id) => {
+  // * Deletes entire factory (child node and grand children)
+  deleteWhole = (id) => {
     console.log(`Started the deletion process on id ${id}`)
-    API.deleteNode(id).then(res => {
-      console.log(res)
-      API.deleteMany(id).then(
-        res => {
-          console.log(res)
-          //this.loadNodeData()
-        })
-    })
+    API.deleteWhole(id)
+      .then(res => console.log(res))
+      .catch(err => console.log(err))
   }
 
   changeNodeName = (id, newName) => {
@@ -192,11 +175,22 @@ class MainPage extends Component {
   // =============================================================
   //  Data Manipulation Functions
   // =============================================================
-  generateGrndchld = (id) => {
+  // * Builds a new child node to seed the root node
+  sendNode = () => {
+    //this.postNodes(this.state.sampleData)
+    console.log('sending node')
+    let newNode = {
+      nodetype: 'child',
+      parent: null,
+      name: this.state.childName,
+      value: null
+    }
+    this.postNodes(newNode, true)
+  }
+
+  // * Builds an array of grandchildren nodes 
+  generateGrndchld = (id, parent) => {
     // console.log(id)
-    // let x = this.state.sampleData.numGrandChildren
-    // let min = this.state.sampleData.minVal
-    // let max = this.state.sampleData.maxVal
     let x = this.state.numGrandChildren
     let min = this.state.minVal
     let max = this.state.maxVal
@@ -227,11 +221,32 @@ class MainPage extends Component {
     this.postNodes(grandkids, false)
   }
 
+  // * Removes deleted nodes from rawnode state
+  removeNodes = (id, whole) => {
+    // * If whole is truthy, it will remove nodes with either _id -or- parent equal to 
+    // * id parameter (for factory deletion), else it will remove nodes with parent 
+    // * equal to id (for factory range updates)
+    if (whole) {
+      let newraw = this.state.rawnodes.filter((node) => {
+        let pass = true;
+        if (node._id === id || node.parent === id) {pass=false}
+        return pass
+      })
+      console.log(newraw)
+      this.setState({
+        rawnodes:newraw
+      }, () => {
+        this.deleteWhole(id)
+      })
+    } else {
+
+    }
+  }
 
   parseNodes = (data) => {
     let newnodes = [];
     console.log(data)
-    data.forEach((item,index) => {
+    data.forEach((item, index) => {
       if (item.nodetype === "child") {
         let child = {
           name: item.name,
@@ -241,7 +256,7 @@ class MainPage extends Component {
         }
         data.forEach((sub, ind) => {
           // sets a range limit on incdeces to speed up processing in large datasets
-          if(ind >= index-20 && ind <= index+20){
+          if (ind >= index - 20 && ind <= index + 20) {
             if (sub.nodetype === "grandchild" && child.id === sub.parent) {
               console.log("We found a grandchild!")
               let grandchild = {
@@ -254,19 +269,17 @@ class MainPage extends Component {
               // data.splice(ind,1)
             }
           }
-
         })
         newnodes.push(child)
-
       }
     })
-    
+
     this.setState({ nodes: newnodes, show: false, showNameEdit: false, showChildEdit: false })
   }
 
-
-
-
+  // =============================================================
+  //  Form, Input, and Modal Manipulation Functions
+  // =============================================================
   handleModalClose(e) {
     this.setState({
       show: false,
@@ -409,7 +422,7 @@ class MainPage extends Component {
                   name={item.name}
                   grandchildren={item.grandchildren}
                   parent={item.parent}
-                  handleDelete={this.deleteNode}
+                  handleDelete={this.removeNodes}
                   handleNameEdit={this.changeNodeName}
                   numKids={item.grandchildren.length}
                 >

@@ -3,7 +3,7 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const routes = require("./routes");
-const Pusher = require('pusher')
+const pusher = require('./utils/Pusher')
 require('dotenv').config();
 
 /* SET UP BASIC APP ==================*/
@@ -30,15 +30,15 @@ app.use(routes);
 
 /* PUSHER DECLARATIONS ==================*/
 // Set up Pusher information
-var pusher = new Pusher({
-  appId: '713669',
-  key: '651f8f2fd68d8e9f1ab0',
-  secret: 'bb6c55ebcb5b177bb6bd',
-  cluster: 'mt1',
-  useTLS: true
-});
+// var pusher = new Pusher({
+//   appId: '713669',
+//   key: '651f8f2fd68d8e9f1ab0',
+//   secret: 'bb6c55ebcb5b177bb6bd',
+//   cluster: 'mt1',
+//   useTLS: true
+// });
 // Test the Pusher connection
-pusher.trigger('my-channel', 'my-event', { "message": "Hi from the new app" })
+//pusher.trigger('my-channel', 'my-event', { "message": "Hi from the new app with modulated Pusher" })
 // Set Pusher channels
 const channel = 'nodes';
 

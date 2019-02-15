@@ -1,17 +1,35 @@
 const Child = require('../../models/child');
 const express = require('express');
 const router = express.Router();
+const pusher = require('../../utils/Pusher');
+
+const channel = 'nodes';
 
 
 /* CREATE */
 router.post('/new', (req, res) => {
-  console.log(Child)
-  Child.create(req.body, (err, child) => {
+  //console.log(Child)
+  console.log('API Index line 13')
+  console.log(req.body)
+  // * Remember, the .create() method can take a single obj or an array
+  // * of objects to create both single and multiple docs
+  Child.create(req.body.nodes, (err, child) => {
     if (err) {
       console.log('CREATE Error: ' + err);
       res.status(500).send('Error');
     } else {
       res.status(200).json(child);
+
+      console.log('--------- CREATE INSERT TRIGGER SHOULD FIRE---------')
+      pusher.trigger('nodes', 'insert', child)
+
+
+      if (!req.body.newCycle) {
+        setTimeout(() => {
+          console.log('--------- CREATE REPARSE TRIGGER SHOULD FIRE---------')
+          pusher.trigger('nodes', 'reparse', child)
+        }, 500)
+      }
     }
   });
 });
@@ -20,8 +38,8 @@ router.post('/new', (req, res) => {
 router.post('/edit/:id', (req, res) => {
   console.log(req.body)
   Child.findOneAndUpdate(
-    {_id:req.params.id}, {$set:{name:req.body.newName}},
-    {new:true},(err,child)=>{
+    { _id: req.params.id }, { $set: { name: req.body.newName } },
+    { new: true }, (err, child) => {
       if (err) {
         console.log(`UPDATE Error: ${err}`)
         res.status(500).send('Error')
@@ -38,52 +56,65 @@ router.route('/delete/:id')
   .delete((req, res) => {
     // console.log(req.params.id)
     Child.findById(req.params.id, (err, child) => {
-      if (err) { 
+      if (err) {
         console.log('DELETE Error: ' + err);
         res.status(500).send('Error');
       } else if (child) {
-        child.remove( () => {
+        child.remove(() => {
           res.status(200).json(child);
         });
-     } else {
+      } else {
         res.status(404).send('Not found');
       }
     });
   });
 
-/* DELETE MANY*/
-router.route('/deleteMany/:id')
+/* DELETE WHOLE FACTORY (CHILD) NODE */
+router.route('/deleteWhole/:id')
   .delete((req, res) => {
     // console.log(req.params.id)
-    Child.deleteMany({ parent: req.params.id }, (err, child) => {
-      if (err) {
-        console.log('DELETE Error: ' + err);
-        res.status(500).send('Error');
-      } else if (child) {
-        res.status(200).json(child)
-      } else {
-        res.status(404).send('Not found');
-      }
-    })
+    Child.deleteMany({
+      $or: [{ parent: req.params.id }, { _id: req.params.id }]
+    },(err, child) => {
+        if (err) {
+          console.log('DELETE Error: ' + err);
+          res.status(500).send('Error');
+        } else if (child) {
+          res.status(200).json(child)
+          setTimeout(() => {
+            console.log('--------- DELETED TRIGGER SHOULD FIRE---------')
+            // pusher.trigger('nodes', 'reparse', child)
+            pusher.trigger('nodes', 'deleted', 'okay')
+          }, 500)
+        } else {
+          res.status(404).send('Not found');
+        }
+      })
   });
 
 /* FIND ALL */
-router.get("/nodes", (req,res) => {
-  console.log(req.query)
-    Child.find(req.query,(err,task) => {
-      if (err){
-        console.log('Error Getting Tasks: ' + err);
-        res.status(500).send('Error');
-      } else if (task) {
-        console.log(task)
-        res.status(200).json(task);
-      } else {
-        res.status(404).send('Not found');
-      }
-    })
-        // .sort({date:-1})
-        // .then(dbTask => res.json(dbTask))
-        // .catch(err => res.status(422).json(err))
+router.get("/nodes", (req, res) => {
+  // console.log(req.query)
+  Child.find(req.query, (err, child) => {
+    if (err) {
+      console.log('Error Getting Children: ' + err);
+      res.status(500).send('Error');
+    } else if (child) {
+      console.log(child)
+      res.status(200).json(child);
+      setTimeout(() => {
+        console.log('---------FIND ALL TRIGGER SHOULD FIRE---------')
+        console.log(!child)
+        // pusher.trigger('nodes', 'InsertTest',child)
+      }, 200)
+
+    } else {
+      res.status(404).send('Not found');
+    }
   })
+  // .sort({date:-1})
+  // .then(dbTask => res.json(dbTask))
+  // .catch(err => res.status(422).json(err))
+})
 
 module.exports = router;

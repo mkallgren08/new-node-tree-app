@@ -14,9 +14,9 @@ export default {
   editNode: function(id, nodeData) { 
     return axios.post("/api/edit/" + id, nodeData);
   },
-  // Deletes many entries at once
-  deleteMany: function(id) {
-    return axios.delete("/api/deleteMany/" + id);
+  // Deletes entire factory at once
+  deleteWhole: function(id) {
+    return axios.delete("/api/deleteWhole/" + id);
   },
   // Deletes the node with the given id
   deleteNode: function(id) {

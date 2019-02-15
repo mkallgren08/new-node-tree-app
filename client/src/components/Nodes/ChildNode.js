@@ -57,7 +57,7 @@ class ChildNode extends Component {
         <div className="childHeader" value={this.props.numKids}>
           <div className="text" key={this.props.id}>{this.props.name}</div>
           <button className="edit" onClick={() => { this.props.handleNameEdit(this.props.id) }}>EDIT</button>
-          <button className="delete" onClick={() => this.props.handleDelete(this.props.id)}>X</button>
+          <button className="delete" onClick={() => this.props.handleDelete(this.props.id, true)}>X</button>
           {/* <button className="delete" onClick={() => this.props.show}>Show</button> */}
           <button className="show" onClick={() => { show ? show = false : show = true; this.setState({ show: show }) }}>{show ? <span>Hide</span> : <span>Show</span>}</button>
           {show ?
