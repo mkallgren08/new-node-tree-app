@@ -66,9 +66,8 @@ db.on("error", function (error) {
 
 // Once logged in to the db through mongoose, log a success message
 db.once("open", function () {
-  console.log(`Mongoose connection to ${mongoConnect} successful.`);
+  console.log(`Mongoose connection to MONGODB_URI successful.`);
   const nodeCollection = db.collection('nodes');
-
   // **************ERROR (Currently Solved) *******************
   // This line was causing a 503 error on Heroku Deployment - 
   // had to upgrade Mongod DB to version>= 3.1.13 and Mongoose to 

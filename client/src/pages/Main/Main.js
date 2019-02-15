@@ -99,11 +99,11 @@ class MainPage extends Component {
     let exraw = rawnodes.filter(el => this.check(el, data._id))
     console.log(data)
     console.log(exraw)
-    this.setState(prevState=>({
-        editnodes:prevState.editnodes.concat(data._id)
-      }),()=>{
-        console.log(this.state.editnodes)
-      })
+    // this.setState(prevState=>({
+    //     editnodes:prevState.editnodes.concat(data._id)
+    //   }),()=>{
+    //     console.log(this.state.editnodes)
+    //   })
     // this.setState(prevState => ({
     //   rawnodes: prevState.tasks.filter(el => this.check(el, id))
     // },()=>{
