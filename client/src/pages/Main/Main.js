@@ -295,7 +295,7 @@ class MainPage extends Component {
       }
     })
 
-    this.setState({ nodes: newnodes, show: false, showNameEdit: false, showChildEdit: false })
+    this.setState({ nodes: newnodes})
   }
 
   // =============================================================
@@ -365,7 +365,9 @@ class MainPage extends Component {
         maxVal: this.state.maxVal
       }
       console.log(newNode)
-      this.postNodes([newNode], true, this.state.numGrandChildren);
+      this.setState({show:false}, ()=>{
+        this.postNodes([newNode], true, this.state.numGrandChildren);
+      });  
     } else {
       let message = "\n"
       errorFields.forEach(val => {

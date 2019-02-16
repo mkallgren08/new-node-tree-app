@@ -119,8 +119,10 @@ router.get("/nodes", (req, res) => {
 router.post("/hold/:id", (req,res)=>{
   console.log(req.body)
   if (req.body.val){
+    console.log('--------- HOLD TRIGGER SHOULD FIRE---------')
     pusher.trigger('nodes','hold',req.params.id);
   } else {
+    console.log('--------- RELEASE TRIGGER SHOULD FIRE---------')
     pusher.trigger('nodes','release',req.params.id)
   }
   res.status(200).send('Hold triggered')

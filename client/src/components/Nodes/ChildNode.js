@@ -39,7 +39,7 @@ class ChildNode extends Component {
     });
     this.channel.bind('release', (data) => { 
       console.log(`${data} has been released for editing`) 
-      this.setState({hold:false})
+      this.setState({hold:false, prime: false})
     });
   }
 
@@ -61,13 +61,19 @@ class ChildNode extends Component {
   }
 
   holdForm = (id, flag) => {
-    this.setState({ prime: flag?true:false }, () => {
-      API.holdEdits(id, flag).then(
-        res => {console.log(res)
-          this.setState({hold: !flag})
-        }
-      )
-    })
+    if (flag==='Release All'){
+        API.holdEdits(id, false).then(
+          res => {console.log(res)}
+        )
+    } else {
+      this.setState({ prime: flag?true:false }, () => {
+        API.holdEdits(id, flag).then(
+          res => {console.log(res)
+            // this.setState({hold: !flag})
+          }
+        )
+      })
+    }
   }
 
   submitEdits = () => {
@@ -114,6 +120,9 @@ class ChildNode extends Component {
       // console.log(newData.editType)
       this.props.handleNodeEdit(newData)
       this.setState({ show: false })
+      // * Note, the holdForm route requires both params to be not null, so a dummy string for
+      // * the id param has to be passed in
+      this.holdForm('10101','Release All')
     } else { console.log('There was an error; please fix before proceeding') }
   };
 
