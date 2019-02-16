@@ -15,10 +15,15 @@ export default {
   },
   // Deletes the grandchild nodes of the child/factory with the given id
   deleteGrandkids: function(nodeData) {
-    return axios.delete(`/api/delete/${nodeData.id}/${nodeData.min}/${nodeData.max}/${nodeData.name}`);
+    console.log(nodeData)
+    return axios.delete(`/api/delete/${nodeData.id}/${nodeData.minVal}/${nodeData.maxVal}/${nodeData.name}`);
   },
   // Saves a node to the database
   saveNode: function(nodeData) {
     return axios.post("/api/new", nodeData);
+  },
+  //Holds form editing on all clients except the local client
+  holdEdits: function(id, flag){
+    return axios.post(`api/hold/${id}`, {val:flag});
   }
 };

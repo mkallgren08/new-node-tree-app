@@ -132,8 +132,9 @@ class MainPage extends Component {
       .then(res => {
         console.log(res)
         if (grandkids) {
-          res.data.numGrandChildren = num
-          this.generateGrndchld(res.data)
+          res.data[0].numGrandChildren = num
+
+          this.generateGrndchld(res.data[0])
         } 
       })
       .catch(err => console.log(err))
@@ -192,6 +193,7 @@ class MainPage extends Component {
       maxVal: this.state.maxVal,
       minVal: this.state.minVal
     }
+    console.log(newNode)
     this.postNodes(newNode, true, this.state.numGrandChildren)
   }
 
@@ -262,7 +264,7 @@ class MainPage extends Component {
 
   parseNodes = (data) => {
     let newnodes = [];
-    console.log(data)
+    // console.log(data)
     data.forEach((item, index) => {
       if (item.nodetype === "child") {
         let child = {
@@ -277,7 +279,7 @@ class MainPage extends Component {
           // sets a range limit on incdeces to speed up processing in large datasets
           if (ind >= index - 20 && ind <= index + 20) {
             if (sub.nodetype === "grandchild" && child.id === sub.parent) {
-              console.log("We found a grandchild!")
+              // console.log("We found a grandchild!")
               let grandchild = {
                 name: sub.name,
                 parent: sub.parent,
@@ -312,6 +314,7 @@ class MainPage extends Component {
   }
 
   handleModalShow() {
+    console.log('Showing the modal')
     this.setState({ show: true });
   }
 
@@ -361,7 +364,8 @@ class MainPage extends Component {
         minVal: this.state.minVal,
         maxVal: this.state.maxVal
       }
-      this.postNodes(newNode, true, this.state.numGrandChildren);
+      console.log(newNode)
+      this.postNodes([newNode], true, this.state.numGrandChildren);
     } else {
       let message = "\n"
       errorFields.forEach(val => {
