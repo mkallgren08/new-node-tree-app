@@ -3,9 +3,6 @@ const express = require('express');
 const router = express.Router();
 const pusher = require('../../utils/Pusher');
 
-const channel = 'nodes';
-
-
 /* CREATE */
 router.post('/new', (req, res) => {
   //console.log(Child)

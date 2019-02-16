@@ -13,7 +13,6 @@ class GrandchildNode extends Component {
       <div className="grandchildHeader">
         {/* <div className="text">{this.props.name}</div> */}
         <div className="gcValue">{this.props.value}</div>
-        <div className="delete">-</div>
       </div>
       <div className="grandchildBody">
 

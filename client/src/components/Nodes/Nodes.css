@@ -7,7 +7,51 @@
   border: red solid 1px;
 }
 
+.btn {
+  font-size: large;
+  border-radius: 12px;
+}
+
+/* .childHeader{
+
+} */
+
+.deleteBtn {
+  color: black;
+  background-color: rgb(211, 35, 35);
+  border: 2px groove rgb(121, 0, 0)
+}
+
+.editBtn{
+  color: Black;
+  background-color: rgb(231, 255, 250);
+  border: 2px groove rgb(121, 121, 121)
+}
+
+.editBtn:hover{
+  color: darkslategrey
+}
+
+.editBtn:focus{
+  color: black
+}
+
+.factName{
+  font-size: 24px;
+  color: Black;
+}
+
 .grandchildWrapper {
   margin: 3px;
   border: blue solid 1px;
+}
+
+.headerContent{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.inline{
+  display: inline-block;
 }

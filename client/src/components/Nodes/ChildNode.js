@@ -3,6 +3,7 @@ import "./Nodes.css";
 import GrandchildNode from "./GrandchildNode";
 import API from "../../utils/API";
 import Pusher from 'pusher-js'
+import ClassNames from "classnames";
 
 const pusher = new Pusher('651f8f2fd68d8e9f1ab0', {
   cluster: 'mt1',
@@ -37,9 +38,9 @@ class ChildNode extends Component {
         this.setState({ hold: true, show: false }, () => console.log(this.state.hold))
       }
     });
-    this.channel.bind('release', (data) => { 
-      console.log(`${data} has been released for editing`) 
-      this.setState({hold:false, prime: false})
+    this.channel.bind('release', (data) => {
+      console.log(`${data} has been released for editing`)
+      this.setState({ hold: false, prime: false })
     });
   }
 
@@ -61,14 +62,15 @@ class ChildNode extends Component {
   }
 
   holdForm = (id, flag) => {
-    if (flag==='Release All'){
-        API.holdEdits(id, false).then(
-          res => {console.log(res)}
-        )
+    if (flag === 'Release All') {
+      API.holdEdits(id, false).then(
+        res => { console.log(res) }
+      )
     } else {
-      this.setState({ prime: flag?true:false }, () => {
+      this.setState({ prime: flag ? true : false }, () => {
         API.holdEdits(id, flag).then(
-          res => {console.log(res)
+          res => {
+            console.log(res)
             // this.setState({hold: !flag})
           }
         )
@@ -122,7 +124,7 @@ class ChildNode extends Component {
       this.setState({ show: false })
       // * Note, the holdForm route requires both params to be not null, so a dummy string for
       // * the id param has to be passed in
-      this.holdForm('10101','Release All')
+      this.holdForm('10101', 'Release All')
     } else { console.log('There was an error; please fix before proceeding') }
   };
 
@@ -141,77 +143,86 @@ class ChildNode extends Component {
     }
 
     // console.log(!this.state.hold)
+    let multiClasses = {
+      deleteBtn: ClassNames("deleteBtn", "inline", "btn"),
+      editBtn: ClassNames("editBtn", "inline", "btn"),
+      factName: ClassNames("factName inline")
+    }
 
     return (
       <div className='childWrapper'>
         <div className="childHeader" value={this.props.numKids}>
-          <div className="text" key={this.props.id}>{this.props.name}</div>
-          {/* <button className="edit" onClick={() => { this.props.handleNameEdit(this.props.id) }}>EDIT</button> */}
-          <button className="delete" onClick={() => this.props.handleDelete(this.props.id, true)}>X</button>
-          {/* <button className="delete" onClick={() => this.props.show}>Show</button> */}
+          <div className="headerTitle">
+            <div className='factName' key={this.props.id}>{this.props.name}</div>
+            {this.state.hold ?
+              <span>* Another user is currently editing this factory; editing is currently disabled </span>
+              : null}
+          </div>
+          <div className="headerContent">
+            <button className={multiClasses.editBtn}
+              onClick={() => {
+                show ? show = false : show = true; this.setState({ show: show }, () => {
+                  this.holdForm(this.props.id, this.state.show)
+                })
+              }}
+              disabled={this.state.hold}
+            >
+              {show ? <span>Close Editing Panel</span> : <span>Edit This Factory</span>}
+            </button>
 
-          {/* {this.state.hold} */}
-          <button className="show"
-            onClick={() => {
-              show ? show = false : show = true; this.setState({ show: show}, () => {
-                this.holdForm(this.props.id, this.state.show)
-              })
-            }}
-            disabled={this.state.hold}
-          >
-            {show ? <span>Hide</span> : <span>Show</span>}
-          </button>
-          {this.state.hold ?
-            <span>* Another user is currently editing this factory; editing is currently disabled </span>
-           : null }
-          {show ?
-            <div>
-              <label htmlFor="childData.name">
-                <strong>NEW Factory Name</strong>
-              </label>
-              <input
-                className={"form-control"}
-                type="text"
-                value={this.state.name}
-                placeholder="Must begin with a minimum of one letter"
-                name="name"
-                onChange={this.handleInputChange}
-                required
-              />
-              <label htmlFor="minVal">
-                <strong>NEW Min Range Val</strong>
-              </label>
-              <input
-                className="form-control"
-                type="number"
-                value={this.state.minVal}
-                placeholder="Any positive integer"
-                name="minVal"
-                onChange={this.handleInputChange}
-                required
-              />
-              <label htmlFor="maxVal">
-                <strong>NEW Max Range Val</strong>
-              </label>
-              <input
-                className="form-control"
-                type="number"
-                value={this.state.maxVal}
-                placeholder="Any positive integer greater than the minimum"
-                name="maxVal"
-                onChange={this.handleInputChange}
-                required
-              />
-              <button
-                onClick={this.submitEdits}
-                type="submit"
-                className="btn btn-lg btn-danger"
-              >
-                Submit
-          </button>
-            </div>
-            : null
-          }
+            {show ?
+              <div className="editForm">
+                <label htmlFor="childData.name">
+                  <strong>NEW Factory Name</strong>
+                </label>
+                <input
+                  className={"form-control"}
+                  type="text"
+                  value={this.state.name}
+                  placeholder="Must begin with a minimum of one letter"
+                  name="name"
+                  onChange={this.handleInputChange}
+                  required
+                />
+                <label htmlFor="minVal">
+                  <strong>NEW Min Range Val</strong>
+                </label>
+                <input
+                  className="form-control"
+                  type="number"
+                  value={this.state.minVal}
+                  placeholder="Any positive integer"
+                  name="minVal"
+                  onChange={this.handleInputChange}
+                  required
+                />
+                <label htmlFor="maxVal">
+                  <strong>NEW Max Range Val</strong>
+                </label>
+                <input
+                  className="form-control"
+                  type="number"
+                  value={this.state.maxVal}
+                  placeholder="Any positive integer greater than the minimum"
+                  name="maxVal"
+                  onChange={this.handleInputChange}
+                  required
+                />
+                <button
+                  onClick={this.submitEdits}
+                  type="submit"
+                  className="btn btn-lg btn-danger"
+                >
+                  Submit
+                </button>
+              </div>
+              : null
+            }
+            <button
+              className={multiClasses.deleteBtn}
+              onClick={() => this.props.handleDelete(this.props.id, true)}
+            >X</button>
+          </div>
         </div>
         <div className="childBody">
           {grandchildren ?
