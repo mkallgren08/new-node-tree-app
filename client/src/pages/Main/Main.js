@@ -203,7 +203,7 @@ class MainPage extends Component {
     let min = data.minVal
     let max = data.maxVal
     let grandkids = [];
-    let parentId = null
+    
     console.log(x, min, max)
     let generateVal = (min, max) => {
       min = parseInt(min, 10)
@@ -213,6 +213,10 @@ class MainPage extends Component {
       return res
     }
 
+    // * this is an admittedly temporary fix - ideally, data.id would work for
+    // * all cases, but something fell through the cracks and I need to spend some
+    // * time prettifying the code and UI
+    let parentId = null
     if (!data.id){
       parentId = data._id
     } else {
