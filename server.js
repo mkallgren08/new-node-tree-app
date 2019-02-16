@@ -37,7 +37,7 @@ const channel = 'nodes';
 mongoose.Promise = global.Promise;
 
 // Declare Mongoose Connection Parameters
-let mongoConnect = process.env.MONGODB_URI2;
+let mongoConnect = process.env.MONGODB_URI;
 
 // Connect to the Mongo DB
 mongoose.connect(
@@ -57,6 +57,10 @@ db.on("error", function (error) {
 // Once logged in to the db through mongoose, log a success message
 db.once("open", function () {
   console.log(`Mongoose connection to MONGODB_URI successful.`);
+
+  // Currently code below this line is not needed for any functionality, 
+  // but it provides a good example of how the change stream functions 
+  // work - which, depending on future features could prove useful!
   const nodeCollection = db.collection('nodes');
   // **************ERROR (Currently Solved) *******************
   // This line was causing a 503 error on Heroku Deployment - 

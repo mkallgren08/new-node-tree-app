@@ -11,7 +11,6 @@ const pusher = new Pusher('651f8f2fd68d8e9f1ab0', {
 });
 
 class ChildNode extends Component {
-
   state = {
     show: false,
     hold: false,
@@ -28,18 +27,15 @@ class ChildNode extends Component {
   }
 
   componentDidMount() {
-    // console.log(this.state)
-    // console.log(this.props)
     this.channel = pusher.subscribe('nodes');
     this.channel.bind('hold', (data) => {
       console.log(`A hold has been placed on ${data}`)
-      console.log(this.state.prime, this.props.id === data)
       if (this.props.id === data && !this.state.prime) {
         this.setState({ hold: true, show: false }, () => console.log(this.state.hold))
       }
     });
     this.channel.bind('release', (data) => {
-      console.log(`${data} has been released for editing`)
+      console.log(`${data} has been released from/for editing`)
       this.setState({ hold: false, prime: false })
     });
   }
@@ -113,8 +109,8 @@ class ChildNode extends Component {
       // * Checks if all fields have been edited, indicates a full factory edit 
       console.log(this.props.name, this.props.minVal, this.props.maxVal)
       if (newData.name !== this.props.name) { newData.editType += 'name' }
-      if (newData.min !== this.props.minVal) { newData.editType += 'range' }
-      if (newData.max !== this.props.maxVal) { newData.editType += 'range' };
+      if (newData.minVal !== this.props.minVal) { newData.editType += 'range' }
+      if (newData.maxVal !== this.props.maxVal) { newData.editType += 'range' };
       if (newData.editType === 'namerange' || newData.editType === 'namerangerange') {
         newData.editType = 'both'
       }
@@ -215,13 +211,17 @@ class ChildNode extends Component {
                 >
                   Submit
                 </button>
+                <button
+                  className={multiClasses.deleteBtn}
+                  onClick={() => {
+                    this.holdForm('10101', 'Release All') 
+                    this.props.handleDelete(this.props.id, true)
+                  }}
+                >X Delete Factory</button>
               </div>
+
               : null
             }
-            <button
-              className={multiClasses.deleteBtn}
-              onClick={() => this.props.handleDelete(this.props.id, true)}
-            >X</button>
           </div>
         </div>
         <div className="childBody">

@@ -20,23 +20,11 @@ class MainPage extends Component {
     rawnodes: [],
     nodes: [],
     show: false,
-    showNameEdit: false,
-    showChildEdit: false,
     childName: "",
     numGrandChildren: null,
     minVal: null,
     maxVal: null,
     errorFields: [],
-    sampleData: {
-      numGrandChildren: 3,
-      newName: 'Updatarooney',
-      minVal: 22,
-      maxVal: 5800,
-      nodetype: 'child',
-      parent: null,
-      name: 'Test Entry',
-      value: null
-    }
   };
 
 
@@ -85,28 +73,6 @@ class MainPage extends Component {
     return pass
   }
 
-
-  // !!!!!!DO I EVEN NEED THIS HERE!!!!!!!!!
-  // Function to take deleted data and remove it from the rawnodes object in the state
-  removeData = (data) => {
-    let rawnodes = this.state.rawnodes;
-
-    let exraw = rawnodes.filter(el => this.check(el, data._id))
-    console.log(data)
-    console.log(exraw)
-    // this.setState(prevState=>({
-    //     editnodes:prevState.editnodes.concat(data._id)
-    //   }),()=>{
-    //     console.log(this.state.editnodes)
-    //   })
-    // this.setState(prevState => ({
-    //   rawnodes: prevState.tasks.filter(el => this.check(el, id))
-    // },()=>{
-    //   console.log(this.state.rawnodes)
-    // }));
-  }
-
-
   // =============================================================
   //  DB Read/Write Functions
   // =============================================================
@@ -144,7 +110,10 @@ class MainPage extends Component {
   deleteWhole = (id) => {
     console.log(`Started the deletion process on id ${id}`)
     API.deleteWhole(id)
-      .then(res => console.log(res))
+      .then(res => {
+        console.log(res)
+        API.holdEdits('10101010', false)
+      })
       .catch(err => console.log(err))
   }
   // * Deletes grandchildren of factory (grand children only)
@@ -304,8 +273,6 @@ class MainPage extends Component {
   handleModalClose(e) {
     this.setState({
       show: false,
-      showNameEdit: false,
-      showChildEdit: false,
       childName: "",
       numGrandChildren: null,
       minVal: null,
