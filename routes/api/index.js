@@ -19,11 +19,8 @@ router.post('/new', (req, res) => {
       res.status(500).send('Error');
     } else {
       res.status(200).json(child);
-
       console.log('--------- CREATE INSERT TRIGGER SHOULD FIRE---------')
       pusher.trigger('nodes', 'insert', child)
-
-
       if (!req.body.newCycle) {
         setTimeout(() => {
           console.log('--------- CREATE REPARSE TRIGGER SHOULD FIRE---------')
@@ -56,8 +53,8 @@ router.post('/editName/:id', (req, res) => {
     })
 });
 
-/* DELETE PART OF FACTORY (CHILD) NODE */
-router.route('/delete/:id')
+/* DELETE GRANDCHILDREN OF FACTORY (CHILD) NODE AND UPDATE THE MIN/MAX*/
+router.route('/delete/:id/:min/:max/:name')
   .delete((req, res) => {
     // console.log(req.params.id)
     Child.deleteMany({
@@ -67,12 +64,13 @@ router.route('/delete/:id')
         console.log('DELETE Error: ' + err);
         res.status(500).send('Error');
       } else if (child) {
-        res.status(200).json(child)
-        setTimeout(() => {
-          console.log('--------- PARTIAL DELETED TRIGGER SHOULD FIRE---------')
-          // pusher.trigger('nodes', 'reparse', child)
-          // pusher.trigger('nodes', 'deleted', 'okay')
-        }, 500)
+        Child.findByIdAndUpdate({ _id: req.params.id },
+          { $set: { maxVal: req.params.max, minVal: req.params.min, name:req.params.name } }
+          , (err, result) => {
+            if (err){console.log(`Error with range update`);console.log(err)}
+            if(result){res.status(200).json(result)}
+          }
+        )
       } else {
         res.status(404).send('Not found');
       }
@@ -105,18 +103,18 @@ router.route('/deleteWhole/:id')
 /* FIND ALL */
 router.get("/nodes", (req, res) => {
   // console.log(req.query)
-  Child.find(req.query, (err, child) => {
+  Child.find({}, (err, child) => {
     if (err) {
       console.log('Error Getting Children: ' + err);
       res.status(500).send('Error');
     } else if (child) {
-      console.log(child)
+      // console.log(child)
       res.status(200).json(child);
-      setTimeout(() => {
-        console.log('---------FIND ALL TRIGGER SHOULD FIRE---------')
-        console.log(!child)
-        // pusher.trigger('nodes', 'InsertTest',child)
-      }, 200)
+      // setTimeout(() => {
+      //   console.log('---------FIND ALL TRIGGER SHOULD FIRE---------')
+      //   console.log(!child)
+      //   // pusher.trigger('nodes', 'InsertTest',child)
+      // }, 200)
 
     } else {
       res.status(404).send('Not found');

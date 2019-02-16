@@ -110,29 +110,31 @@ class MainPage extends Component {
   // =============================================================
   //  DB Read/Write Functions
   // =============================================================
+  // * Loads all the data from the db
   loadNodeData = () => {
     API.getNodeData()
-      .then(
-        res => {
-          // console.log("test data: " + JSON.stringify(res.data, null, 2))
-          this.setState({ rawnodes: res.data }, () => {
-            this.parseNodes(this.state.rawnodes);
-          })
+      .then(res => {
+        this.setState({ rawnodes: res.data }, () => {
+          this.parseNodes(this.state.rawnodes);
         })
+      })
       .catch(err => console.log(err));
   };
 
-  postNodes = (nodes, grandkids) => {
+  // * Posts newly created nodes (both child nodes and grandchild nodes) to
+  // * the database; NOTE: the singular child node must be wrapped in an array 
+  // * to allow the backend functionality to work with both single- and multi-
+  // * amounts of documents
+  
+  postNodes = (nodes, grandkids, num) => {
     console.log(nodes)
     API.saveNode({ nodes: nodes, newCycle: grandkids })
       .then(res => {
         console.log(res)
         if (grandkids) {
-          this.generateGrndchld(res.data._id)
-        } else {
-          //console.log(this.state.rawnodes)
-          // this.loadNodeData()
-        }
+          res.data.numGrandChildren = num
+          this.generateGrndchld(res.data)
+        } 
       })
       .catch(err => console.log(err))
   }
@@ -144,37 +146,28 @@ class MainPage extends Component {
       .then(res => console.log(res))
       .catch(err => console.log(err))
   }
+  // * Deletes grandchildren of factory (grand children only)
+  deleteGrandchildren = (newData) => {
+    console.log(`Started the grandchild deletion process on id ${newData.id}`);
+    API.deleteGrandkids(newData)
+    .then(res => {
+      console.log(res)
+      this.generateGrndchld(newData)
+    })
+    .catch(err => console.log(err))
+  }
 
   changeNode = (newData) => {
     let id = newData.id
-    // newData = {newName:----, minVal:...., maxVal.....}
-    console.log(`Started the editing process on id ${id} to change the name to ${newData.name}`)
-    
-    if(newData.editType==='name'){
-      API.editNodeName(newData).then(
-        res => {
-          console.log(res);
-          res => {
-            console.log(res);
-            this.setState({ childName: '' }, () => {
-              this.loadNodeData();
-            })
-          }
-        }
-      )
-    }
-    
-    API.editNodeName(newData).then(
-      res => {
-        console.log(res);
-        res => {
-          console.log(res);
-          this.setState({ childName: '' }, () => {
-            // this.loadNodeData();
-          })
-        }
-      }
-    )
+    console.log(newData.editType)
+    if (newData.editType === 'name') {
+      console.log(`Started the editing process on id ${id} to change the name to ${newData.name}`)
+      API.editNodeName(newData)
+        .then(res => { console.log(res); }
+        )
+    } else if (newData.editType === 'range' || newData.editType === 'rangerange' || newData.editType === 'both') {
+      this.deleteGrandchildren(newData)
+    } 
   }
 
   changeNodeChildren = (id) => {
@@ -201,11 +194,11 @@ class MainPage extends Component {
   }
 
   // * Builds an array of grandchildren nodes 
-  generateGrndchld = (id, parent) => {
+  generateGrndchld = (data) => {
     // console.log(id)
-    let x = this.state.numGrandChildren
-    let min = this.state.minVal
-    let max = this.state.maxVal
+    let x = data.numGrandChildren
+    let min = data.min
+    let max = data.max
     let grandkids = [];
     console.log(x, min, max)
     let generateVal = (min, max) => {
@@ -219,7 +212,7 @@ class MainPage extends Component {
     for (let i = 0; i < x; i++) {
       let grandkid = {
         nodetype: 'grandchild',
-        parent: id,
+        parent: data.id,
         value: generateVal(min, max),
         name: null,
         minVal: null,
@@ -239,12 +232,12 @@ class MainPage extends Component {
     if (whole) {
       let newraw = this.state.rawnodes.filter((node) => {
         let pass = true;
-        if (node._id === id || node.parent === id) {pass=false}
+        if (node._id === id || node.parent === id) { pass = false }
         return pass
       })
       console.log(newraw)
       this.setState({
-        rawnodes:newraw
+        rawnodes: newraw
       }, () => {
         this.deleteWhole(id)
       })

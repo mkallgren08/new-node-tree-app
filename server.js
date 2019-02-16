@@ -81,7 +81,7 @@ db.once("open", function () {
     if (change.operationType === 'insert') {
       const child = change.fullDocument;
       console.log("Child Data: ")
-      console.log(child)
+      //console.log(child)
       pusher.trigger(
         channel,
         'inserted',
@@ -90,7 +90,7 @@ db.once("open", function () {
     } else if (change.operationType === 'delete') {
       const data = change.documentKey
       console.log("Deleted Child Data: ")
-      console.log(data)
+      //console.log(data)
       pusher.trigger(
         channel,
         'deleted',

@@ -69,7 +69,8 @@ class ChildNode extends Component {
         name: this.state.name,
         min: this.state.minVal,
         max: this.state.maxVal,
-        editType: ''
+        editType: '',
+        numGrandChildren: this.props.numKids
       }
       // * Checks if all fields have been edited, indicates a full factory edit 
       if (newData.name !== this.props.name && newData.name) {newData.editType += 'name'} 
