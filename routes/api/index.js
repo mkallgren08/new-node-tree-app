@@ -9,8 +9,8 @@ const channel = 'nodes';
 /* CREATE */
 router.post('/new', (req, res) => {
   //console.log(Child)
-  console.log('API Index line 13')
-  console.log(req.body)
+  // console.log('API Index line 13')
+  // console.log(req.body)
   // * Remember, the .create() method can take a single obj or an array
   // * of objects to create both single and multiple docs
   Child.create(req.body.nodes, (err, child) => {

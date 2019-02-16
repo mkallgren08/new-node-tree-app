@@ -188,18 +188,22 @@ class MainPage extends Component {
       nodetype: 'child',
       parent: null,
       name: this.state.childName,
-      value: null
+      value: null,
+      maxVal: this.state.maxVal,
+      minVal: this.state.minVal
     }
-    this.postNodes(newNode, true)
+    this.postNodes(newNode, true, this.state.numGrandChildren)
   }
 
   // * Builds an array of grandchildren nodes 
   generateGrndchld = (data) => {
+    console.log(data)
     // console.log(id)
     let x = data.numGrandChildren
-    let min = data.min
-    let max = data.max
+    let min = data.minVal
+    let max = data.maxVal
     let grandkids = [];
+    let parentId = null
     console.log(x, min, max)
     let generateVal = (min, max) => {
       min = parseInt(min, 10)
@@ -209,10 +213,16 @@ class MainPage extends Component {
       return res
     }
 
+    if (!data.id){
+      parentId = data._id
+    } else {
+      parentId = data.id
+    }
+
     for (let i = 0; i < x; i++) {
       let grandkid = {
         nodetype: 'grandchild',
-        parent: data.id,
+        parent: parentId,
         value: generateVal(min, max),
         name: null,
         minVal: null,
@@ -221,7 +231,7 @@ class MainPage extends Component {
       grandkids.push(grandkid);
     }
     console.log(grandkids)
-    this.postNodes(grandkids, false)
+    this.postNodes(grandkids, false, 0)
   }
 
   // * Removes deleted nodes from rawnode state
@@ -347,7 +357,7 @@ class MainPage extends Component {
         minVal: this.state.minVal,
         maxVal: this.state.maxVal
       }
-      this.postNodes(newNode, true);
+      this.postNodes(newNode, true, this.state.numGrandChildren);
     } else {
       let message = "\n"
       errorFields.forEach(val => {
@@ -356,27 +366,6 @@ class MainPage extends Component {
       alert(`You have errors in one or more of the following fields: ${message}`)
     }
 
-  }
-
-  // Handles factory Name edits and form validation
-  handleNodeEdit = (data) => {
-    console.log(data)
-    // e.preventDefault();
-    // console.log(data.id)
-    // let count = 0;
-    // let errorFields = this.state.errorFields
-    // if (this.state.childName.length > 0 && isNaN(this.state.childName)) {
-    //   count++;
-    // } else { errorFields.push('Factory Name') }
-    // if (count === 1) {
-    //   this.changeNode(data.id, this.state.childName)
-    // } else {
-    //   let message = "\n"
-    //   errorFields.forEach(val => {
-    //     message += `* ${val}\n`
-    //   })
-    //   alert(`You have errors in one or more of the following fields: ${message}`)
-    // }
   }
   // This is the function that renders the page in the client's window.
   render() {

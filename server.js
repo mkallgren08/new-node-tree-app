@@ -29,16 +29,6 @@ app.use(express.static("client/build"));
 app.use(routes);
 
 /* PUSHER DECLARATIONS ==================*/
-// Set up Pusher information
-// var pusher = new Pusher({
-//   appId: '713669',
-//   key: '651f8f2fd68d8e9f1ab0',
-//   secret: 'bb6c55ebcb5b177bb6bd',
-//   cluster: 'mt1',
-//   useTLS: true
-// });
-// Test the Pusher connection
-//pusher.trigger('my-channel', 'my-event', { "message": "Hi from the new app with modulated Pusher" })
 // Set Pusher channels
 const channel = 'nodes';
 
@@ -80,7 +70,7 @@ db.once("open", function () {
     // console.log(change);
     if (change.operationType === 'insert') {
       const child = change.fullDocument;
-      console.log("Child Data: ")
+      //console.log("Child Data: ")
       //console.log(child)
       pusher.trigger(
         channel,
@@ -89,7 +79,7 @@ db.once("open", function () {
       );
     } else if (change.operationType === 'delete') {
       const data = change.documentKey
-      console.log("Deleted Child Data: ")
+      console.log(`Deleted Child Data: ${data._id}`)
       //console.log(data)
       pusher.trigger(
         channel,
@@ -98,9 +88,6 @@ db.once("open", function () {
       );
     }
   })
-
-
-
 });
 
 
