@@ -1,11 +1,8 @@
 import React, { Component } from "react";
 import Jumbotron from "../../components/Jumbotron";
 import API from "../../utils/API";
-// import DeleteBtn from "../../components/DeleteBtn";
 import { Modal } from "react-bootstrap";
 import { /*Col,*/ Row, Container } from "../../components/Grid";
-// import history from '../../history.js';
-// import { List, ListItem } from "../../components/List";
 import { RootNode } from "../../components/Nodes";
 import ChildNode from "../../components/Nodes/ChildNode";
 import CustomForm from "../../components/Form";
@@ -58,13 +55,10 @@ class MainPage extends Component {
   // Initial load of saved items
   componentDidMount() {
     this.channel = pusher.subscribe('nodes');
-    // this.channel.bind('InsertTest', (data) => {
-    //   console.log('Insert-Test data: ');
-    //   //console.log(data)
-    // })
+
     this.channel.bind('insert', (data) => { this.pushData(data) });
     this.channel.bind('deleted', (data) => { this.loadNodeData() })
-    this.channel.bind('reparse', () => { this.parseNodes(this.state.rawnodes) })
+    this.channel.bind('reparse', () => { this.loadNodeData() })
     this.loadNodeData();
   };
 
@@ -91,6 +85,8 @@ class MainPage extends Component {
     return pass
   }
 
+
+  // !!!!!!DO I EVEN NEED THIS HERE!!!!!!!!!
   // Function to take deleted data and remove it from the rawnodes object in the state
   removeData = (data) => {
     let rawnodes = this.state.rawnodes;
@@ -149,10 +145,26 @@ class MainPage extends Component {
       .catch(err => console.log(err))
   }
 
-  changeNodeName = (id, newName) => {
-    newName = { newName: this.state.sampleData.newName }
-    console.log(`Started the editing process on id ${id} to change the name to ${newName}`)
-    API.editNode(id, newName).then(
+  changeNode = (newData) => {
+    let id = newData.id
+    // newData = {newName:----, minVal:...., maxVal.....}
+    console.log(`Started the editing process on id ${id} to change the name to ${newData.name}`)
+    
+    if(newData.editType==='name'){
+      API.editNodeName(newData).then(
+        res => {
+          console.log(res);
+          res => {
+            console.log(res);
+            this.setState({ childName: '' }, () => {
+              this.loadNodeData();
+            })
+          }
+        }
+      )
+    }
+    
+    API.editNodeName(newData).then(
       res => {
         console.log(res);
         res => {
@@ -208,13 +220,11 @@ class MainPage extends Component {
       let grandkid = {
         nodetype: 'grandchild',
         parent: id,
-        value: generateVal(min, max)
+        value: generateVal(min, max),
+        name: null,
+        minVal: null,
+        maxVal: null
       };
-      if (i === x - 1) {
-        grandkid.name = 'last grandkid'
-      } else {
-        grandkid.name = null
-      }
       grandkids.push(grandkid);
     }
     console.log(grandkids)
@@ -252,7 +262,9 @@ class MainPage extends Component {
           name: item.name,
           parent: 'rootNode',
           id: item._id,
-          grandchildren: []
+          grandchildren: [],
+          minVal: item.minVal,
+          maxVal: item.maxVal,
         }
         data.forEach((sub, ind) => {
           // sets a range limit on incdeces to speed up processing in large datasets
@@ -301,7 +313,7 @@ class MainPage extends Component {
     // Destructure the name and value properties off of event.target
     // Update the appropriate state
     const { name, value } = event.target;
-    console.log(name, value)
+    // console.log(name, value, typeof value)
     if (name === 'minVal' || name === 'maxVal' || name === 'numGrandChildren') {
       let nuval = parseInt(value, 10)
       this.setState({
@@ -334,7 +346,15 @@ class MainPage extends Component {
     } else { errorFields.push('Max Range Val') }
     console.log(count, errorFields)
     if (count === 4) {
-      this.sendNode();
+      let newNode = {
+        nodetype: 'child',
+        parent: null,
+        name: this.state.childName,
+        value: null,
+        minVal: this.state.minVal,
+        maxVal: this.state.maxVal
+      }
+      this.postNodes(newNode, true);
     } else {
       let message = "\n"
       errorFields.forEach(val => {
@@ -346,29 +366,25 @@ class MainPage extends Component {
   }
 
   // Handles factory Name edits and form validation
-  handleNameEdit = (e, id) => {
-    e.preventDefault();
-    console.log(id)
-    let count = 0;
-    let errorFields = this.state.errorFields
-    if (this.state.childName.length > 0 && isNaN(this.state.childName)) {
-      count++;
-    } else { errorFields.push('Factory Name') }
-    if (count === 1) {
-      this.changeNodeName(id, this.state.childName)
-    } else {
-      let message = "\n"
-      errorFields.forEach(val => {
-        message += `* ${val}\n`
-      })
-      alert(`You have errors in one or more of the following fields: ${message}`)
-    }
+  handleNodeEdit = (data) => {
+    console.log(data)
+    // e.preventDefault();
+    // console.log(data.id)
+    // let count = 0;
+    // let errorFields = this.state.errorFields
+    // if (this.state.childName.length > 0 && isNaN(this.state.childName)) {
+    //   count++;
+    // } else { errorFields.push('Factory Name') }
+    // if (count === 1) {
+    //   this.changeNode(data.id, this.state.childName)
+    // } else {
+    //   let message = "\n"
+    //   errorFields.forEach(val => {
+    //     message += `* ${val}\n`
+    //   })
+    //   alert(`You have errors in one or more of the following fields: ${message}`)
+    // }
   }
-  // Handles factory range edits and form validation
-  handleRangeEdit = e => {
-
-  }
-
   // This is the function that renders the page in the client's window.
   render() {
 
@@ -376,7 +392,6 @@ class MainPage extends Component {
     if (this.state.nodes.length > 0) {
       children = true;
     }
-    let factory = this.state.factory
 
     return (
       <Container fluid>
@@ -390,7 +405,7 @@ class MainPage extends Component {
         </Row>
         <Row>
           <button className="primary" onClick={this.handleModalShow}>New Factory</button>
-          <button className="primary" onClick={this.sendNode}>Send Sample Data</button>
+          {/* <button className="primary" onClick={this.sendNode}>Send Sample Data</button> */}
           <Modal show={this.state.show} onHide={this.handleModalClose}>
             <Modal.Header closeButton>
               <Modal.Title>Modal heading</Modal.Title>
@@ -423,8 +438,10 @@ class MainPage extends Component {
                   grandchildren={item.grandchildren}
                   parent={item.parent}
                   handleDelete={this.removeNodes}
-                  handleNameEdit={this.changeNodeName}
+                  handleNodeEdit={this.changeNode}
                   numKids={item.grandchildren.length}
+                  minVal={item.minVal}
+                  maxVal={item.maxVal}
                 >
                 </ChildNode>
                 )

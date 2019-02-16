@@ -102,7 +102,7 @@ class CustomForm extends Component {
             className="btn btn-lg btn-danger"
           >
             Submit
-      </button>
+          </button>
         </div>
       </form>
     )

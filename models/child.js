@@ -6,7 +6,9 @@ const childSchema = new Schema({
   nodetype: {type:String},
   parent: {type: ObjectId}, 
   name: { type: String },
-  value: {type: Number}
+  value: {type: Number},
+  minVal: {type:Number},
+  maxVal: {type: Number}
 },
 {collection: 'nodes'}
 );

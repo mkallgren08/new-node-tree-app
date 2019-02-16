@@ -34,39 +34,49 @@ router.post('/new', (req, res) => {
   });
 });
 
-/* UPDATE */
-router.post('/edit/:id', (req, res) => {
+/* UPDATE  NODE NAME */
+router.post('/editName/:id', (req, res) => {
   console.log(req.body)
   Child.findOneAndUpdate(
-    { _id: req.params.id }, { $set: { name: req.body.newName } },
+    { _id: req.params.id }, { $set: { name: req.body.name } },
     { new: true }, (err, child) => {
       if (err) {
         console.log(`UPDATE Error: ${err}`)
         res.status(500).send('Error')
       } else if (child) {
         res.status(200).json(child)
+        setTimeout(() => {
+          console.log('--------- NAME UPDATE REPARSE TRIGGER SHOULD FIRE---------')
+          pusher.trigger('nodes', 'reparse', 'okay')
+          // pusher.trigger('nodes', 'deleted', 'okay')
+        }, 500)
       } else {
         res.status(404).send('Not found');
       }
     })
 });
 
-/* DELETE */
+/* DELETE PART OF FACTORY (CHILD) NODE */
 router.route('/delete/:id')
   .delete((req, res) => {
     // console.log(req.params.id)
-    Child.findById(req.params.id, (err, child) => {
+    Child.deleteMany({
+      parent: req.params.id
+    }, (err, child) => {
       if (err) {
         console.log('DELETE Error: ' + err);
         res.status(500).send('Error');
       } else if (child) {
-        child.remove(() => {
-          res.status(200).json(child);
-        });
+        res.status(200).json(child)
+        setTimeout(() => {
+          console.log('--------- PARTIAL DELETED TRIGGER SHOULD FIRE---------')
+          // pusher.trigger('nodes', 'reparse', child)
+          // pusher.trigger('nodes', 'deleted', 'okay')
+        }, 500)
       } else {
         res.status(404).send('Not found');
       }
-    });
+    })
   });
 
 /* DELETE WHOLE FACTORY (CHILD) NODE */
@@ -75,21 +85,21 @@ router.route('/deleteWhole/:id')
     // console.log(req.params.id)
     Child.deleteMany({
       $or: [{ parent: req.params.id }, { _id: req.params.id }]
-    },(err, child) => {
-        if (err) {
-          console.log('DELETE Error: ' + err);
-          res.status(500).send('Error');
-        } else if (child) {
-          res.status(200).json(child)
-          setTimeout(() => {
-            console.log('--------- DELETED TRIGGER SHOULD FIRE---------')
-            // pusher.trigger('nodes', 'reparse', child)
-            pusher.trigger('nodes', 'deleted', 'okay')
-          }, 500)
-        } else {
-          res.status(404).send('Not found');
-        }
-      })
+    }, (err, child) => {
+      if (err) {
+        console.log('DELETE Error: ' + err);
+        res.status(500).send('Error');
+      } else if (child) {
+        res.status(200).json(child)
+        setTimeout(() => {
+          console.log('--------- DELETED TRIGGER SHOULD FIRE---------')
+          // pusher.trigger('nodes', 'reparse', child)
+          pusher.trigger('nodes', 'deleted', 'okay')
+        }, 500)
+      } else {
+        res.status(404).send('Not found');
+      }
+    })
   });
 
 /* FIND ALL */

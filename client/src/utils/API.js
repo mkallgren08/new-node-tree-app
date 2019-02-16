@@ -11,15 +11,15 @@ export default {
   },
 
   // Edits a node with the given id
-  editNode: function(id, nodeData) { 
-    return axios.post("/api/edit/" + id, nodeData);
+  editNodeName: function(nodeData) { 
+    return axios.post("/api/editName/" + nodeData.id, nodeData);
   },
   // Deletes entire factory at once
   deleteWhole: function(id) {
     return axios.delete("/api/deleteWhole/" + id);
   },
-  // Deletes the node with the given id
-  deleteNode: function(id) {
+  // Deletes the grandchild nodes of the child/factory with the given id
+  deleteGrandkids: function(id) {
     return axios.delete("/api/delete/" + id);
   },
   // Saves a node to the database
