@@ -11,9 +11,9 @@
 ## About the Application
 ### Deployed website is [located here](https://new-node-tree-app.herokuapp.com/)
 
-This website allows a user to create new 'Factories' which are nodes that generate a series of sub-nodes containing random numbers within a user-specified range. The Factory data is stored in a database which is read in real-time, allowing multiple users to edit the Factories containing within the overall root node.  
+This website allows a user to create new 'Factories' which are nodes that generate a series of sub-nodes containing random numbers within a user-specified range. The Factory data is stored in a database which is read in real-time, allowing multiple users to edit the Factories contained within the overall root node.  
 
-The name of each Factory may be any alpha-numeric combination but must start with a letter. A Factory may have between 1 and 15 nodes; **once created, the number of nodes is fixed**. Each node will contain a random number between a user-defined range of postiive integers.
+The name of each Factory may be any alpha-numeric combination but must start with a letter. A Factory must have between 1 and 15 nodes; **once created, the number of nodes is fixed**. Each node will contain a random number between a user-defined range of postiive integers.
 
 After creating the Factory, a user may edit the Factory's name and/or the number range for the Factory's nodes. Mutual-exclusion (mutex) protocols have been implemented to prevent multiple users from editing the same Factory by placing a hold and disabling the Editing Panel for that Factory for all users except the one currently performing edits; this helps prevent data corruption.
 
@@ -56,6 +56,8 @@ Below is a list a test cases performed during development:
   13. Check that one client can edit a Factory while another client creates a _new_ Factory without affecting either the Factory creation or edit.
   14. Check that navigating away from a page will release the holds on any Factories.
   16. Check that refreshing the page of a client who is _not_ editing a Factory with an edit hold applied to it does not remove the editing hold on that Factory
+  
+--------
 ## Known Issues
 Below is a list of known issues:
   1. If the range of numbers for a Factory's nodes is small (~ 30 or less ), a node may be generated with a number slightly greater than the specified number maximum. 
@@ -66,7 +68,7 @@ Below is a list of known issues:
 Below is a list of future developments:
   1. If the need arises, implement the ability for a Factory's individual nodes to be edited.
   2. Replace the alert() and confirm() functions with custom modals - primarily for appearance's sake; the functionality would remain the same.
-  3. Test out [mutex](#mutual-exclusion) protocols to handle multiple editing panels open on the same client; if the tests reveal bugs, fix them.
-  4. Fix the small range [issue](#~-30-or-less).
-  5. Find/build a fix for the navigation event [issue](#user-who-is-editing-a-factory-attempts-to-either-close)
+  3. Test out [mutex](#about-the-application) protocols to handle multiple editing panels open on the same client; if the tests reveal bugs, fix them.
+  4. Fix the small range [issue](#known-issues) (Known Issue #1).
+  5. Find/build a fix for the navigation event [issue](#factory-editing)
   6. Write automated tests
