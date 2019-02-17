@@ -8,7 +8,7 @@
   5. [Future Developments](#future-developments)
 --------
 ## About the Application
-###### [Back to Top](#table-of-contents)
+###### [Back to Top](#factory-node-tree-application)
 
 ### Deployed website is [located here](https://new-node-tree-app.herokuapp.com/)
 
@@ -21,7 +21,7 @@ After creating the Factory, a user may edit the Factory's name and/or the number
 
 ------
 ## Factory Editing
-###### [Back to Top](#table-of-contents)
+###### [Back to Top](#factory-node-tree-application)
 
 Every Factory has an "Edit This Factory" button. If a hold has been applied to a Factory, a notifiction will appear beneath the Factory's name and the Edit This Factory button will be disabled.
   **-Important Note:** There is currently a documented bug where a user who is editing a Factory attempts to either close, navigate away from, or refresh a page before finishing the edit. Attempting any of these navigation actions will release the hold on that Factory, even if the user cancels the navigation event. **If you accidentally navigate away from the page while editing, remain on the page _and then close the Editing Panel and immediately reopen it_**. Your data will not be overwritten and reopening the Editing Panel will reapply the hold; preventing other users from simultaneously editing the Factory.
@@ -40,7 +40,7 @@ If the user is done editing, they may do one of three things:
 
 ------
 ## Test Cases Performed
-###### [Back to Top](#table-of-contents)
+###### [Back to Top](#factory-node-tree-application)
 
 Below is a list a test cases performed during development:
   1. Create a new Factory
@@ -64,7 +64,7 @@ Below is a list a test cases performed during development:
 
 --------
 ## Known Issues
-###### [Back to Top](#table-of-contents)
+###### [Back to Top](#factory-node-tree-application)
 
 Below is a list of known issues:
   1. If the range of numbers for a Factory's nodes is small (~ 30 or less ), a node may be generated with a number slightly greater than the specified number maximum. 
@@ -72,7 +72,7 @@ Below is a list of known issues:
 
 ------
 ## Future Developments
-###### [Back to Top](#table-of-contents)
+###### [Back to Top](#factory-node-tree-application)
 
 Below is a list of future developments:
   1. If the need arises, implement the ability for a Factory's individual nodes to be edited.
