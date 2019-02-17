@@ -70,6 +70,7 @@ Below is a list a test cases performed during development:
 Below is a list of known issues:
   1. If the range of numbers for a Factory's nodes is small (~ 30 or less ), a node may be generated with a number slightly greater than the specified number maximum. 
   2. The navigation event [issue](#user-who-is-editing-a-factory-attempts-to-either-close) mentioned in the [Factory Editing](#factory-editing) section.
+  3. Occasionally - in production only - the hold checking function on page loading does not properly apply holds. 
 
 ------
 ## Future Developments
@@ -82,4 +83,4 @@ Below is a list of future developments:
   4. Fix the small range [issue](#known-issues) (Known Issue #1).
   5. Find/build a fix for the navigation event [issue](#factory-editing).
   6. Write automated tests.
-  7. Expand tests on asynchronous access and page concurrency to identify seemingly random errors with edit-hold generation and clearing.
+  7. Expand tests on asynchronous access and page concurrency to identify seemingly random errors with edit-hold generation and clearing; includes Known Issue #3.
