@@ -121,7 +121,7 @@ router.post("/hold/:id", (req,res)=>{
   console.log(req.body)
   if (req.body.val){
     console.log('--------- HOLD TRIGGER SHOULD FIRE---------')
-    if (req.params.id.indexOf('~~~') === -1 ){
+    if (req.params.id.indexOf('~~~') === -1 && holds.indexOf(req.params.id)===-1){
       holds.push(req.params.id)
       console.log("Held ids: ")
       console.log(holds)
