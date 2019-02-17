@@ -1,10 +1,23 @@
+label{
+  color: black;
+  border-bottom: 2px darkgrey solid
+  
+}
+
 #rootNode {
   border: black solid 1px;
 }
 
-.childWrapper {
-  margin: 3px;
-  border: red solid 1px;
+.childWrapper{
+  display: flex;
+}
+
+.childContentWrapper {
+  flex-grow: 1;
+  margin: 5px 1% 5px 3px;
+  border: darkred inset 2px;
+  border-radius: 5px;
+  padding-left: 10px;
 }
 
 .btn {
@@ -26,7 +39,8 @@
 .editBtn{
   color: Black;
   background-color: rgb(231, 255, 250);
-  border: 2px groove rgb(121, 121, 121)
+  border: 2px groove rgb(121, 121, 121);
+  max-height: 100px;
 }
 
 .editBtn:hover{
@@ -37,14 +51,41 @@
   color: black
 }
 
+.editForm{
+  flex-grow:1;
+  margin: auto 10px;
+  border: slategray 2px outset;
+  padding: 5px;
+}
+
 .factName{
   font-size: 24px;
   color: Black;
 }
 
+.gcSpacerBlockRight{
+  flex-grow:1;
+}
+.gcSpacerBlockLeft{
+  width: 194px;
+}
+
+.gcValue{
+  margin-left: 5px;
+  color: black;
+  font-weight: bold;
+}
+
 .grandchildWrapper {
-  margin: 3px;
-  border: blue solid 1px;
+  display: flex;
+  margin: 5px 1% 2px 2px;
+}
+
+.grandchildContentWrapper {
+  flex-grow: 1;
+  margin: 3px 40% 3px 3px ;
+  border: slateblue inset 2px;
+  border-radius: 10px;
 }
 
 .headerContent{
@@ -55,4 +96,25 @@
 
 .inline{
   display: inline-block;
+}
+
+.pipeBracket{
+  align-self: flex-start;
+  background-image: url('../../assets/images/pipe.png');
+  height: 30px;
+  width: 30px;
+  background-size: 30px 30px;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-left: 2%;
+}
+
+.pipeBracket.gcPipe{
+  height: 20px;
+  width: 20px;
+  background-size: 20px 20px;
+}
+
+.rootNodeTitle{
+  margin-left: 15px;
 }

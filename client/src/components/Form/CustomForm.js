@@ -61,11 +61,16 @@ class CustomForm extends Component {
           />
         </div>
         <div className="modalBtnBar">
-          <button onClick={this.props.handleModalClose}>Close</button>
+          <button
+            onClick={this.props.handleModalClose}
+            className='btn btn-lg btnClose' 
+          >  
+            Close
+          </button>
           <button
             onClick={this.props.handleFormSubmit}
-            type="submit"
-            className="btn btn-lg btn-danger"
+            // type="submit"
+            className="btn btn-lg btnSubmit"
           >
             Submit
           </button>

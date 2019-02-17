@@ -14,7 +14,7 @@
 
 This website allows a user to create new 'Factories' which are nodes that generate a series of sub-nodes containing random numbers within a user-specified range. The Factory data is stored in a database which is read in real-time, allowing multiple users to edit the Factories contained within the overall root node.  
 
-The name of each Factory may be any alpha-numeric combination but must start with a letter. A Factory must have between 1 and 15 nodes; **once created, the number of nodes is fixed**. Each node will contain a random number between a user-defined range of postiive integers.
+The name of each Factory may be any alpha-numeric combination but must start with a letter. A Factory must have between 1 and 15 nodes; **once created, the number of nodes is fixed**. Each node will contain a random number between a user-defined range of positive integers.
 
 After creating the Factory, a user may edit the Factory's name and/or the number range for the Factory's nodes. Mutual-exclusion (mutex) protocols have been implemented to prevent multiple users from editing the same Factory by placing a hold and disabling the Editing Panel for that Factory for all users except the one currently performing edits; this helps prevent data corruption.
 
@@ -23,7 +23,7 @@ After creating the Factory, a user may edit the Factory's name and/or the number
 ## Factory Editing
 ###### [Back to Top](#factory-node-tree-application)
 
-Every Factory has an "Edit This Factory" button. If a hold has been applied to a Factory, a notifiction will appear beneath the Factory's name and the Edit This Factory button will be disabled.
+Every Factory has an "Edit This Factory" button. If a hold has been applied to a Factory, a notification will appear beneath the Factory's name and the Edit This Factory button will be disabled.
   **-Important Note:** There is currently a documented bug where a user who is editing a Factory attempts to either close, navigate away from, or refresh a page before finishing the edit. Attempting any of these navigation actions will release the hold on that Factory, even if the user cancels the navigation event. **PLEASE NOTE: If you accidentally navigate away from the page while editing, remain on the page _and then close the Editing Panel and immediately reopen it_**. Your data will not be overwritten and reopening the Editing Panel will reapply the hold; preventing other users from simultaneously editing the Factory.
 
 Once a user has clicked the Edit button, an Editing Panel will drop down. This panel contains the following:
@@ -32,7 +32,7 @@ Once a user has clicked the Edit button, an Editing Panel will drop down. This p
   - A Submit button
   - A Delete button
 
-The user may edit any of the fields available. Please note that the number of nodes is fixed on Factory creation, and that each Factory node is suppossed to be a random number. **At the present time, the application's requirements do not need to allow a user to edit the value of an individual Factory node; they are meant to be random.**
+The user may edit any of the fields available. Please note that the number of nodes is fixed on Factory creation, and that each Factory node is supposed to be a random number. **At the present time, the application's requirements do not need to allow a user to edit the value of an individual Factory node; they are meant to be random.**
 
 If the user is done editing, they may do one of three things:
   1. Close the Editing Panel: this will release the hold on the Factory but leave any changes made during editing accessible to the current client. If another client edits the Factory, those changes will be overwritten.
@@ -82,3 +82,4 @@ Below is a list of future developments:
   4. Fix the small range [issue](#known-issues) (Known Issue #1).
   5. Find/build a fix for the navigation event [issue](#factory-editing).
   6. Write automated tests.
+  7. Expand tests on asynchronous access and page concurrency to identify seemingly random errors with edit-hold generation and clearing.

@@ -9,6 +9,7 @@ import { RootNode } from "../../components/Nodes";
 import ChildNode from "../../components/Nodes/ChildNode";
 import CustomForm from "../../components/Form";
 import Pusher from 'pusher-js'
+import './Main.css'
 
 const pusher = new Pusher('651f8f2fd68d8e9f1ab0', {
   cluster: 'mt1',
@@ -27,6 +28,7 @@ class MainPage extends Component {
     minVal: null,
     maxVal: null,
     errorFields: [],
+    showInfo: false
   };
 
 
@@ -281,6 +283,7 @@ class MainPage extends Component {
   handleModalClose(e) {
     this.setState({
       show: false,
+      showInfo: false,
       childName: "",
       numGrandChildren: null,
       minVal: null,
@@ -369,21 +372,34 @@ class MainPage extends Component {
           <Jumbotron>
             <h1>
               Welcome to the Factory Generator
-              <FontAwesomeIcon
-                // onClick={props.onClick}
-                className="noZoom faIconSide"
-                icon="angle-double-right"
-              />
             </h1>
+            <h3 className={"infoSubtitleWrapper"}>
+              <button
+                className={"infoSubtitle"}
+                onClick={() => {
+                  this.setState({ showInfo: this.state.showInfo ? false : true })
+                }
+                }
+              >
+                For instructions, click here
+                  <sup>
+                    <FontAwesomeIcon
+                      // onClick={props.onClick}
+                      className="noZoom faInfoCircle customInfoCircle"
+                      icon="info-circle"
+                    />
+                  </sup>
+              </button>
+            </h3>
 
-            <Infobox />
+            <Infobox showThis={this.state.showInfo} hideThis={this.handleModalClose} />
           </Jumbotron>
         </Row>
         <Row>
-          <button className="primary" onClick={this.handleModalShow}>New Factory</button>
+          <button className="btn btn-lg newFactory" onClick={this.handleModalShow}>New Factory</button>
           {/* <button className="primary" onClick={this.sendNode}>Send Sample Data</button> */}
           <Modal show={this.state.show} onHide={this.handleModalClose}>
-            <Modal.Header>
+            <Modal.Header className={'modalHeader'}>
               <Modal.Title>Create New Factory</Modal.Title>
             </Modal.Header>
             <Modal.Body>

@@ -1,0 +1,40 @@
+.customInfoCircle{
+  margin-left: 5px;
+}
+
+.infoSubtitle{
+  color:white;
+  background-color: #20315A;
+  border: none;
+}
+
+.infoSubtitle:hover{
+  background-color: rgb(50, 71, 119);
+}
+
+.modalHeader{
+  display: flex;
+  justify-content: center;
+  background-color: lightgray;
+  border-bottom: 3px darkgrey groove;
+}
+
+.newFactory{
+  margin: 0px 0px 20px 15px;
+  font-size: 25px;
+  height: 60px;
+  width: 300px;
+  background-color: rgb(0, 117, 0);
+  color: white;
+  border: 2px groove darkgreen
+}
+
+.newFactory:hover{
+  background-color: rgb(0,80,0)
+}
+
+#rootNode{
+  margin: auto 1vw;
+  background-color: #dddddd;
+  border-radius: 10px;
+}

@@ -1,0 +1,38 @@
+p{
+  padding:5px;
+}
+.btnClose{
+  background-color: grey;
+  color: white
+}
+
+.btnClose:hover{
+  background-color: rgb(83, 83, 83);
+}
+
+.indentItem{
+  margin-left: 15px;
+}
+
+.infoBoxTitle{
+  display:inline-block;
+  font-size: 23px;
+}
+
+.infoHeader{
+  display: flex;
+  flex-direction: column;
+  background-color: lightgray;
+  border-bottom: 3px darkgrey groove;
+}
+
+.modal-content{
+  border-radius: 5px;
+}
+
+.upperBtnClose{
+  background-color: rgb(143, 2, 2);
+  border-radius: 3px;
+  color: white;
+  align-self: flex-end;
+}
