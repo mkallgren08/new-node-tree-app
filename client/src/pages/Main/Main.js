@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import Jumbotron from "../../components/Jumbotron";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Infobox from "../../components/Infobox";
 import API from "../../utils/API";
 import { Modal } from "react-bootstrap";
 import { /*Col,*/ Row, Container } from "../../components/Grid";
@@ -91,7 +93,7 @@ class MainPage extends Component {
   // * the database; NOTE: the singular child node must be wrapped in an array 
   // * to allow the backend functionality to work with both single- and multi-
   // * amounts of documents
-  
+
   postNodes = (nodes, grandkids, num) => {
     console.log(nodes)
     API.saveNode({ nodes: nodes, newCycle: grandkids })
@@ -101,30 +103,36 @@ class MainPage extends Component {
           res.data[0].numGrandChildren = num
 
           this.generateGrndchld(res.data[0])
-        } 
+        }
       })
       .catch(err => console.log(err))
   }
 
   // * Deletes entire factory (child node and grand children)
   deleteWhole = (id) => {
+    let proceed = window.confirm('Are you sure you want to delete this factory? This action cannot be undone')
     console.log(`Started the deletion process on id ${id}`)
-    API.deleteWhole(id)
-      .then(res => {
-        console.log(res)
-        API.holdEdits('~~~~~~~~', false)
-      })
-      .catch(err => console.log(err))
+    if (proceed) {
+      API.deleteWhole(id)
+        .then(res => {
+          console.log(res)
+          API.holdEdits(id, false)
+        })
+        .catch(err => console.log(err))
+    } else {
+      API.holdEdits(id, true)
+    }
+
   }
   // * Deletes grandchildren of factory (grand children only)
   deleteGrandchildren = (newData) => {
     console.log(`Started the grandchild deletion process on id ${newData.id}`);
     API.deleteGrandkids(newData)
-    .then(res => {
-      console.log(res)
-      this.generateGrndchld(newData)
-    })
-    .catch(err => console.log(err))
+      .then(res => {
+        console.log(res)
+        this.generateGrndchld(newData)
+      })
+      .catch(err => console.log(err))
   }
 
   changeNode = (newData) => {
@@ -133,11 +141,11 @@ class MainPage extends Component {
     if (newData.editType === 'name') {
       console.log(`Started the editing process on id ${id} to change the name to ${newData.name}`)
       API.editNodeName(newData)
-        .then(res => { console.log(res); }
+        .then(res => { console.log(res); API.holdEdits(id, false).then(res => console.log(res)) }
         )
     } else if (newData.editType === 'range' || newData.editType === 'rangerange' || newData.editType === 'both') {
       this.deleteGrandchildren(newData)
-    } 
+    }
   }
 
   changeNodeChildren = (id) => {
@@ -174,7 +182,7 @@ class MainPage extends Component {
     let min = data.minVal
     let max = data.maxVal
     let grandkids = [];
-    
+
     console.log(x, min, max)
     let generateVal = (min, max) => {
       min = parseInt(min, 10)
@@ -188,7 +196,7 @@ class MainPage extends Component {
     // * all cases, but something fell through the cracks and I need to spend some
     // * time prettifying the code and UI
     let parentId = null
-    if (!data.id){
+    if (!data.id) {
       parentId = data._id
     } else {
       parentId = data.id
@@ -264,7 +272,7 @@ class MainPage extends Component {
       }
     })
 
-    this.setState({ nodes: newnodes})
+    this.setState({ nodes: newnodes })
   }
 
   // =============================================================
@@ -332,9 +340,9 @@ class MainPage extends Component {
         maxVal: this.state.maxVal
       }
       console.log(newNode)
-      this.setState({show:false}, ()=>{
+      this.setState({ show: false }, () => {
         this.postNodes([newNode], true, this.state.numGrandChildren);
-      });  
+      });
     } else {
       let message = "\n"
       errorFields.forEach(val => {
@@ -359,7 +367,16 @@ class MainPage extends Component {
         </Row> */}
         <Row>
           <Jumbotron>
-            <h1> Hello! Time to get Coding! </h1>
+            <h1>
+              Welcome to the Factory Generator
+              <FontAwesomeIcon
+                // onClick={props.onClick}
+                className="noZoom faIconSide"
+                icon="angle-double-right"
+              />
+            </h1>
+
+            <Infobox />
           </Jumbotron>
         </Row>
         <Row>

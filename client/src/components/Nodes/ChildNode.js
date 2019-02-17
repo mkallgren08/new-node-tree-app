@@ -35,7 +35,7 @@ class ChildNode extends Component {
       }
     });
     this.channel.bind('release', (data) => {
-      if (data === this.props.id){
+      if (data === this.props.id) {
         console.log(`${data} has been released from/for editing`)
         this.setState({ hold: false, prime: false })
       }
@@ -52,16 +52,16 @@ class ChildNode extends Component {
     // * to allow people to be potentially trapped indefinitely on the page,
     // * so this is the best solution I can think of at the present time.
     window.addEventListener("beforeunload", (e) => {
-      var releaseEdits = this.releaseHolds(this.props.id); 
+      var releaseEdits = this.releaseHolds(this.props.id);
       (e || window.event).returnValue = releaseEdits; //Gecko + IE
       return releaseEdits;                            //Webkit, Safari, Chrome
     });
   }
   // *Helper function for the 'beforeunload' event to trigger a hold release quickly
-  releaseHolds = (id) =>{API.holdEdits(id, false).then(res => console.log(res))};
-  
+  releaseHolds = (id) => { API.holdEdits(id, false).then(res => console.log(res)) };
+
   // *Helper function for checking if this child currently has a hold on it
-  checkHolds = (id) =>{API.checkHolds(id).then(res => console.log(res.data))}
+  checkHolds = (id) => { API.checkHolds(id).then(res => console.log(res.data)) }
 
   handleInputChange = (e) => {
     // Destructure the name and value properties off of event.target and update the appropriate state
@@ -237,7 +237,7 @@ class ChildNode extends Component {
                 <button
                   className={multiClasses.deleteBtn}
                   onClick={() => {
-                    this.holdForm('~~~~~~~', 'Release') 
+                    // this.holdForm(this.props.id, 'Release')
                     this.props.handleDelete(this.props.id, true)
                   }}
                 >X Delete Factory</button>
