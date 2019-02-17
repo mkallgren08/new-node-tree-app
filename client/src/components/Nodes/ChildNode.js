@@ -72,6 +72,8 @@ class ChildNode extends Component {
       let releaseEdits = '';
       // Checks another user is 
       if (e.currentTarget.performance.navigation.type !== 1 || this.state.prime){
+        dataPacket.message = `Releasing hold on ${this.props.id}`
+        API.logData(dataPacket)
         releaseEdits = this.releaseHolds(this.props.id);
       } 
       (e || window.event).returnValue = releaseEdits; //Gecko + IE

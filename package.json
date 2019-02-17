@@ -1,7 +1,7 @@
 {
-  "name": "hangman",
+  "name": "factory_tree_node_app",
   "version": "1.0.0",
-  "description": "hangman game written using MERN stack",
+  "description": "Factory tree node app written using MERN stack",
   "main": "server.js",
   "scripts": {
     "server": "node server.js",

@@ -145,8 +145,11 @@ router.post("/hold/:id", (req,res)=>{
 router.post("/holdCheck/:id", (req,res)=>{
   if (holds.indexOf(req.params.id) > -1){
     pusher.trigger('nodes','hold',req.params.id);
+    res.status(200).send(`hold found for ${req.params.id}`)
+  } else {
+    res.status(200).send(`no hold found for ${req.params.id}`)
   }
-  res.status(200).send('Checking for holds')
+  
 })
 
 /* LOGS OUT DATA FOR ANALYSIS */
