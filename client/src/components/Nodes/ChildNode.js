@@ -22,11 +22,11 @@ class ChildNode extends Component {
 
   constructor(props) {
     super(props)
-    // console.log('Child loaded')
     this.handleInputChange = this.handleInputChange.bind(this)
   }
 
   componentDidMount() {
+    // * Set up the hold/release triggers for this component
     this.channel = pusher.subscribe('nodes');
     this.channel.bind('hold', (data) => {
       console.log(`A hold has been placed on ${data}`)
@@ -35,10 +35,33 @@ class ChildNode extends Component {
       }
     });
     this.channel.bind('release', (data) => {
-      console.log(`${data} has been released from/for editing`)
-      this.setState({ hold: false, prime: false })
+      if (data === this.props.id){
+        console.log(`${data} has been released from/for editing`)
+        this.setState({ hold: false, prime: false })
+      }
+    });
+    // * Checks if this factory currently has holds on it
+    this.checkHolds(this.props.id)
+
+    // * This will release any holds on this component's id in the event
+    // * the browser/window/tab is closed before the edit form is closed
+    // * This is not a perfect fix - the hold will be released regardless
+    // * of whether or not a user cancels the page exit. I've researched
+    // * on whether or not you can bind events to the leave and cancel
+    // * buttons, but that seems to be a dead end - browsers don't want 
+    // * to allow people to be potentially trapped indefinitely on the page,
+    // * so this is the best solution I can think of at the present time.
+    window.addEventListener("beforeunload", (e) => {
+      var releaseEdits = this.releaseHolds(this.props.id); 
+      (e || window.event).returnValue = releaseEdits; //Gecko + IE
+      return releaseEdits;                            //Webkit, Safari, Chrome
     });
   }
+  // *Helper function for the 'beforeunload' event to trigger a hold release quickly
+  releaseHolds = (id) =>{API.holdEdits(id, false).then(res => console.log(res))};
+  
+  // *Helper function for checking if this child currently has a hold on it
+  checkHolds = (id) =>{API.checkHolds(id).then(res => console.log(res))}
 
   handleInputChange = (e) => {
     // Destructure the name and value properties off of event.target and update the appropriate state
@@ -58,7 +81,7 @@ class ChildNode extends Component {
   }
 
   holdForm = (id, flag) => {
-    if (flag === 'Release All') {
+    if (flag === 'Release') {
       API.holdEdits(id, false).then(
         res => { console.log(res) }
       )
@@ -120,7 +143,7 @@ class ChildNode extends Component {
       this.setState({ show: false })
       // * Note, the holdForm route requires both params to be not null, so a dummy string for
       // * the id param has to be passed in
-      this.holdForm('10101', 'Release All')
+      this.holdForm(this.props.id, 'Release')
     } else { console.log('There was an error; please fix before proceeding') }
   };
 
@@ -214,7 +237,7 @@ class ChildNode extends Component {
                 <button
                   className={multiClasses.deleteBtn}
                   onClick={() => {
-                    this.holdForm('10101', 'Release All') 
+                    this.holdForm('~~~~~~~', 'Release') 
                     this.props.handleDelete(this.props.id, true)
                   }}
                 >X Delete Factory</button>

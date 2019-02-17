@@ -113,16 +113,37 @@ router.get("/nodes", (req, res) => {
   })
 })
 
+/* APPLY AND RELEASE HOLDS */
+
+let holds =[];
+
 router.post("/hold/:id", (req,res)=>{
   console.log(req.body)
   if (req.body.val){
     console.log('--------- HOLD TRIGGER SHOULD FIRE---------')
+    if (req.params.id.indexOf('~~~') === -1 ){
+      holds.push(req.params.id)
+      console.log("Held ids: ")
+      console.log(holds)
+    }
     pusher.trigger('nodes','hold',req.params.id);
   } else {
     console.log('--------- RELEASE TRIGGER SHOULD FIRE---------')
+    if (holds.indexOf(req.params.id) > -1 ){
+      holds.splice(holds.indexOf(req.params.id),1)
+      console.log("Held ids: ")
+      console.log(holds)
+    }
     pusher.trigger('nodes','release',req.params.id)
   }
   res.status(200).send('Hold triggered')
+})
+
+/* CHECK FOR HOLDS */
+router.post("/holdCheck/:id", (req,res)=>{
+  if (holds.indexOf(req.params.id) > -1){
+    pusher.trigger('nodes','hold',req.params.id);
+  }
 })
 
 module.exports = router;

@@ -14,12 +14,7 @@ export const makeMainRoutes = () => {
     <Router history={history}>
       <div>
         <Route exact path={"/"} render={(props) => <Main  {...props} />} />
-        <Route exact path={"/home"} render={(props) => <Main  {...props} />} />
         <Route exact path={"/test"} render={(props) => <TestPage  {...props} />} />
-        <Route exact path={"/testdata"} render={(props) => <Main  {...props} />} />
-        {/* <Route exact path={"/testdata"} render={(props) => <TestPage  {...props} />} /> */}
-        {/* <PrivateRoute path='/profile' component={Profile} redirectTo="/main" auth={auth} /> */}
-        {/* <Articles /> */}
       </div>
     </Router>
   );

@@ -112,7 +112,7 @@ class MainPage extends Component {
     API.deleteWhole(id)
       .then(res => {
         console.log(res)
-        API.holdEdits('10101010', false)
+        API.holdEdits('~~~~~~~~', false)
       })
       .catch(err => console.log(err))
   }
