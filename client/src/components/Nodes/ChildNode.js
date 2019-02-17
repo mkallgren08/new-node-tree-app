@@ -52,7 +52,28 @@ class ChildNode extends Component {
     // * to allow people to be potentially trapped indefinitely on the page,
     // * so this is the best solution I can think of at the present time.
     window.addEventListener("beforeunload", (e) => {
-      var releaseEdits = this.releaseHolds(this.props.id);
+      console.log('Navigation type value, client X value, and client Y value: ')
+      let dataPacket = {
+        navigationType: e.currentTarget.performance.navigation.type
+      }
+      console.log(e.currentTarget.performance.navigation.type)
+      if (window.event){
+        console.log(window.event.clientX, window.event.clientY)
+        dataPacket.clientX = window.event.clientX
+        dataPacket.clientY = window.event.clientY
+        if (window.event.clientX < 40 && window.event.clientY < 0) {
+          // Back Button
+        } else {
+          // Refresh Button
+        }
+      }
+
+      API.logData(dataPacket)
+      let releaseEdits = '';
+      // Checks another user is 
+      if (e.currentTarget.performance.navigation.type !== 1 || this.state.prime){
+        releaseEdits = this.releaseHolds(this.props.id);
+      } 
       (e || window.event).returnValue = releaseEdits; //Gecko + IE
       return releaseEdits;                            //Webkit, Safari, Chrome
     });

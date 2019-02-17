@@ -147,4 +147,12 @@ router.post("/holdCheck/:id", (req,res)=>{
   res.status(200).send('Checking for holds')
 })
 
+/* LOGS OUT DATA FOR ANALYSIS */
+router.post("/log", (req,res)=>{
+  console.log("____ Start Navigation Data ___")
+  console.log(req.body)
+  console.log("____ End Navigation Data ___")
+  res.status(200).send('Check server logs for data')
+})
+
 module.exports = router;

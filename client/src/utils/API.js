@@ -29,5 +29,11 @@ export default {
   //Holds form editing on all clients except the local client
   checkHolds: function (id) {
     return axios.post(`api/holdCheck/${id}`);
+  },
+  // Route for logging out data on reload events - mainly a dev tool
+  logData: function(data){
+    return axios.post(`api/log`, data)
   }
+
+
 };
