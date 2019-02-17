@@ -24,15 +24,15 @@ After creating the Factory, a user may edit the Factory's name and/or the number
 ###### [Back to Top](#factory-node-tree-application)
 
 Every Factory has an "Edit This Factory" button. If a hold has been applied to a Factory, a notifiction will appear beneath the Factory's name and the Edit This Factory button will be disabled.
-  **-Important Note:** There is currently a documented bug where a user who is editing a Factory attempts to either close, navigate away from, or refresh a page before finishing the edit. Attempting any of these navigation actions will release the hold on that Factory, even if the user cancels the navigation event. **If you accidentally navigate away from the page while editing, remain on the page _and then close the Editing Panel and immediately reopen it_**. Your data will not be overwritten and reopening the Editing Panel will reapply the hold; preventing other users from simultaneously editing the Factory.
+  **-Important Note:** There is currently a documented bug where a user who is editing a Factory attempts to either close, navigate away from, or refresh a page before finishing the edit. Attempting any of these navigation actions will release the hold on that Factory, even if the user cancels the navigation event. **PLEASE NOTE: If you accidentally navigate away from the page while editing, remain on the page _and then close the Editing Panel and immediately reopen it_**. Your data will not be overwritten and reopening the Editing Panel will reapply the hold; preventing other users from simultaneously editing the Factory.
 
 Once once a user has clicked the Edit button, an Editing Panel will drop down. This panel contains the following:
   - A field to change the Factory name
   - A field to change the minimum value of the Factory's number-generator
   - A Submit button
   - A Delete button
-  
-The user may edit any of the fields available. Please note that the number of nodes is fixed on Factory creation, and that each Factory node is suppossed to be a random number. **At the present time, the application's requirements do not need to allow a user to edit the value of an individual Factory node; they are meant to be random**
+
+The user may edit any of the fields available. Please note that the number of nodes is fixed on Factory creation, and that each Factory node is suppossed to be a random number. **At the present time, the application's requirements do not need to allow a user to edit the value of an individual Factory node; they are meant to be random.**
 
 If the user is done editing, they may do one of three things:
   1. Close the Editing Panel: this will release the hold on the Factory but leave any changes made during editing accessible to the current client. If another client edits the Factory, those changes will be overwritten.
