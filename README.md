@@ -31,7 +31,8 @@ Once once a user has clicked the Edit button, an Editing Panel will drop down. T
   - A field to change the minimum value of the Factory's number-generator
   - A Submit button
   - A Delete button
-The user may edit any of the fields available. Please note that the number of nodes is fixed on Factory creation, and that each Factory node is suppossed to be a random number. **At the present time, the applications requirements do not need to allow a user to edit the value of an individual Factory node; they are meant to be random**
+  
+The user may edit any of the fields available. Please note that the number of nodes is fixed on Factory creation, and that each Factory node is suppossed to be a random number. **At the present time, the application's requirements do not need to allow a user to edit the value of an individual Factory node; they are meant to be random**
 
 If the user is done editing, they may do one of three things:
   1. Close the Editing Panel: this will release the hold on the Factory but leave any changes made during editing accessible to the current client. If another client edits the Factory, those changes will be overwritten.
