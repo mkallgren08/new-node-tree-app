@@ -1,3 +1,10 @@
+label{
+  color: black;
+  border-bottom: 2px darkgrey solid;
+  width: 30%;
+  margin-top: 5px;
+}
+
 .customInfoCircle{
   margin-left: 5px;
 }

@@ -252,20 +252,23 @@ class ChildNode extends Component {
                     onChange={this.handleInputChange}
                     required
                   />
-                  <button
-                    onClick={this.submitEdits}
-                    type="submit"
-                    className="btn btn-lg btn-danger"
-                  >
-                    Submit
-                </button>
-                  <button
-                    className={multiClasses.deleteBtn}
-                    onClick={() => {
-                      // this.holdForm(this.props.id, 'Release')
-                      this.props.handleDelete(this.props.id, true)
-                    }}
-                  >X Delete Factory</button>
+                  <div className="editBtnsBar">
+                    <button
+                      onClick={this.submitEdits}
+                      type="submit"
+                      className="btn btn-lg submitBtn"
+                    >
+                      Submit
+                    </button>
+                    <button
+                      className={multiClasses.deleteBtn}
+                      onClick={() => {
+                        // this.holdForm(this.props.id, 'Release')
+                        this.props.handleDelete(this.props.id, true)
+                      }}
+                    >X Delete Factory
+                    </button>
+                  </div>
                 </div>
 
                 : null
