@@ -61,7 +61,7 @@ class ChildNode extends Component {
   releaseHolds = (id) =>{API.holdEdits(id, false).then(res => console.log(res))};
   
   // *Helper function for checking if this child currently has a hold on it
-  checkHolds = (id) =>{API.checkHolds(id).then(res => console.log(res))}
+  checkHolds = (id) =>{API.checkHolds(id).then(res => console.log(res.data))}
 
   handleInputChange = (e) => {
     // Destructure the name and value properties off of event.target and update the appropriate state

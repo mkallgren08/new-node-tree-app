@@ -144,6 +144,7 @@ router.post("/holdCheck/:id", (req,res)=>{
   if (holds.indexOf(req.params.id) > -1){
     pusher.trigger('nodes','hold',req.params.id);
   }
+  res.status(200).send('Checking for holds')
 })
 
 module.exports = router;
