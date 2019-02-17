@@ -199,7 +199,7 @@ class ChildNode extends Component {
             <div className="headerTitle">
               <div className='factName' key={this.props.id}>{this.props.name}</div>
               {this.state.hold ?
-                <span>* Another user is currently editing this factory; editing is currently disabled </span>
+                <span className='editWarning'>* Another user is currently editing this factory; editing is currently disabled </span>
                 : null}
             </div>
             <div className="headerContent">
