@@ -383,8 +383,8 @@ class MainPage extends Component {
           <button className="primary" onClick={this.handleModalShow}>New Factory</button>
           {/* <button className="primary" onClick={this.sendNode}>Send Sample Data</button> */}
           <Modal show={this.state.show} onHide={this.handleModalClose}>
-            <Modal.Header closeButton>
-              <Modal.Title>Modal heading</Modal.Title>
+            <Modal.Header>
+              <Modal.Title>Create New Factory</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <CustomForm

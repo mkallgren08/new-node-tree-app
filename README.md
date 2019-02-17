@@ -26,7 +26,7 @@ After creating the Factory, a user may edit the Factory's name and/or the number
 Every Factory has an "Edit This Factory" button. If a hold has been applied to a Factory, a notifiction will appear beneath the Factory's name and the Edit This Factory button will be disabled.
   **-Important Note:** There is currently a documented bug where a user who is editing a Factory attempts to either close, navigate away from, or refresh a page before finishing the edit. Attempting any of these navigation actions will release the hold on that Factory, even if the user cancels the navigation event. **PLEASE NOTE: If you accidentally navigate away from the page while editing, remain on the page _and then close the Editing Panel and immediately reopen it_**. Your data will not be overwritten and reopening the Editing Panel will reapply the hold; preventing other users from simultaneously editing the Factory.
 
-Once once a user has clicked the Edit button, an Editing Panel will drop down. This panel contains the following:
+Once a user has clicked the Edit button, an Editing Panel will drop down. This panel contains the following:
   - A field to change the Factory name
   - A field to change the minimum value of the Factory's number-generator
   - A Submit button

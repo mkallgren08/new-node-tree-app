@@ -3,40 +3,6 @@ import "./Form.css"
 
 class CustomForm extends Component {
 
-  // state = {
-  //   child: false,
-  //   grandchildren: false,
-  //   minVal: false,
-  //   maxVal: false
-  // }
-
-  // checkErrors = () => {
-  //   if (this.props.errors.length > 0) {
-  //     let newState = {
-  //       child: false,
-  //       grandchildren: false,
-  //       minVal: false,
-  //       maxVal: false
-  //     }
-  //     this.props.errors.forEach((val) => {
-  //       if (val === "childName") {
-  //         newState.child = true
-  //       } else if (val === "numGrandChildren") { 
-  //         newState.grandchildren = true
-  //       } else if (val === "minVal") { 
-  //         newState.minVal = true
-  //       } else if (val === "maxVal") { 
-  //         newState.maxVal = true
-  //       }
-  //     })
-
-  //     this.setState({
-  //       child: newState.child, grandchildren: newState.grandchildren,
-  //       minVal: newState.minVal, maxVal: newState.maxVal
-  //     })
-  //   }
-  // }
-
   render() {
     return (
       <form>
@@ -94,7 +60,7 @@ class CustomForm extends Component {
             required
           />
         </div>
-        <div className="pull-right">
+        <div className="modalBtnBar">
           <button onClick={this.props.handleModalClose}>Close</button>
           <button
             onClick={this.props.handleFormSubmit}
@@ -107,12 +73,6 @@ class CustomForm extends Component {
       </form>
     )
   }
-
 }
-
-
-// const CustomForm = props => (
-
-// );
 
 export default CustomForm
