@@ -56,7 +56,7 @@ Below is a list a test cases performed during development:
   13. Check that one client can edit a Factory while another client creates a _new_ Factory without affecting either the Factory creation or edit.
   14. Check that navigating away from a page will release the holds on any Factories.
   16. Check that refreshing the page of a client who is _not_ editing a Factory with an edit hold applied to it does not remove the editing hold on that Factory
-  
+
 --------
 ## Known Issues
 Below is a list of known issues:
@@ -70,5 +70,5 @@ Below is a list of future developments:
   2. Replace the alert() and confirm() functions with custom modals - primarily for appearance's sake; the functionality would remain the same.
   3. Test out [mutex](#about-the-application) protocols to handle multiple editing panels open on the same client; if the tests reveal bugs, fix them.
   4. Fix the small range [issue](#known-issues) (Known Issue #1).
-  5. Find/build a fix for the navigation event [issue](#factory-editing)
-  6. Write automated tests
+  5. Find/build a fix for the navigation event [issue](#factory-editing).
+  6. Write automated tests.
