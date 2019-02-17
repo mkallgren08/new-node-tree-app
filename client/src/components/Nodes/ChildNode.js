@@ -29,8 +29,8 @@ class ChildNode extends Component {
     // * Set up the hold/release triggers for this component
     this.channel = pusher.subscribe('nodes');
     this.channel.bind('hold', (data) => {
-      console.log(`A hold has been placed on ${data}`)
       if (this.props.id === data && !this.state.prime) {
+        console.log(`A hold has been placed on ${data}`)
         this.setState({ hold: true, show: false }, () => console.log(this.state.hold))
       }
     });
