@@ -118,6 +118,8 @@ router.get("/nodes", (req, res) => {
 let holds =[];
 
 router.post("/hold/:id", (req,res)=>{
+  console.log('Holds before trigger fire')
+  console.log(holds)
   console.log(req.body)
   if (req.body.val){
     console.log('--------- HOLD TRIGGER SHOULD FIRE---------')
